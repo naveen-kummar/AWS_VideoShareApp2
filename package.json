@@ -1,8 +1,12 @@
 {
 	"dependencies": {
-		"@aws-sdk/client-dynamodb": "^3.665.0"
+		"@aws-sdk/client-dynamodb": "^3.665.0",
+		"@aws-sdk/lib-dynamodb": "^3.665.0",
+		"uuid": "^10.0.0"
 	},
 	"devDependencies": {
+		"@types/aws-lambda": "^8.10.145",
+		"@types/uuid": "^10.0.0",
 		"aws-lambda": "^1.0.7"
 	}
 }

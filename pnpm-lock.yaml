@@ -11,7 +11,19 @@ importers:
       '@aws-sdk/client-dynamodb':
         specifier: ^3.665.0
         version: 3.665.0
+      '@aws-sdk/lib-dynamodb':
+        specifier: ^3.665.0
+        version: 3.665.0(@aws-sdk/client-dynamodb@3.665.0)
+      uuid:
+        specifier: ^10.0.0
+        version: 10.0.0
     devDependencies:
+      '@types/aws-lambda':
+        specifier: ^8.10.145
+        version: 8.10.145
+      '@types/uuid':
+        specifier: ^10.0.0
+        version: 10.0.0
       aws-lambda:
         specifier: ^1.0.7
         version: 1.0.7
@@ -89,6 +101,12 @@ packages:
     resolution: {integrity: sha512-CzuRWMj/xtN9p9eP915nlPmlyniTzke732Ow/M60++gGgB3W+RtZyFftw3TEx+NzNhd1tH54dEcGiWdiNaBz3Q==}
     engines: {node: '>=16.0.0'}
 
+  '@aws-sdk/lib-dynamodb@3.665.0':
+    resolution: {integrity: sha512-L1Za773RvqxFN8j2E9gVjELSgf3pWUWi1VUOMSmAwJQYb9z+yS7skxyYk22IVWWP3gkYaYY+N73ypaTn3kmYOg==}
+    engines: {node: '>=16.0.0'}
+    peerDependencies:
+      '@aws-sdk/client-dynamodb': ^3.665.0
+
   '@aws-sdk/middleware-endpoint-discovery@3.664.0':
     resolution: {integrity: sha512-K7I1eM9zaRNtOUo+jf8M2ZkTsncWhY/gMMuJubNbj7ceym3LzShougrbxTZl/OOug5Vcmn8A3aOn7gIpq9WT1A==}
     engines: {node: '>=16.0.0'}
@@ -122,6 +140,12 @@ packages:
   '@aws-sdk/types@3.664.0':
     resolution: {integrity: sha512-+GtXktvVgpreM2b+NJL9OqZGsOzHwlCUrO8jgQUvH/yA6Kd8QO2YFhQCp0C9sSzTteZJVqGBu8E0CQurxJHPbw==}
     engines: {node: '>=16.0.0'}
+
+  '@aws-sdk/util-dynamodb@3.665.0':
+    resolution: {integrity: sha512-u93VA9AtkpME/G+I6bGeiGGyqRt6fH5khPI2kBDpq3ABr6WYsRtwIEZvARP4bB/ZNwV7GlGi8bgaeQHt19Sfbw==}
+    engines: {node: '>=16.0.0'}
+    peerDependencies:
+      '@aws-sdk/client-dynamodb': ^3.665.0
 
   '@aws-sdk/util-endpoints@3.664.0':
     resolution: {integrity: sha512-KrXoHz6zmAahVHkyWMRT+P6xJaxItgmklxEDrT+npsUB4d5C/lhw16Crcp9TDi828fiZK3GYKRAmmNhvmzvBNg==}
@@ -311,6 +335,12 @@ packages:
     resolution: {integrity: sha512-xs/KAwWOeCklq8aMlnpk25LgxEYHKOEodfjfKclDMLcBJEVEKzDLxZxBQyztcuPJ7F54213NJS8PxoiHNMdItQ==}
     engines: {node: '>=16.0.0'}
 
+  '@types/aws-lambda@8.10.145':
+    resolution: {integrity: sha512-dtByW6WiFk5W5Jfgz1VM+YPA21xMXTuSFoLYIDY0L44jDLLflVPtZkYuu3/YxpGcvjzKFBZLU+GyKjR0HOYtyw==}
+
+  '@types/uuid@10.0.0':
+    resolution: {integrity: sha512-7gqG38EyHgyP1S+7+xomFtL+ZNHcKv6DwNaCZmJmo1vgMugyF3TCnXVg4t1uk89mLNwnLtnY3TpOpCOyp1/xHQ==}
+
   argparse@1.0.10:
     resolution: {integrity: sha512-o5Roy6tNG4SL/FOkCAN6RzjiakZS25RLYFrcMttJqbdd8BWrnA+fGz57iN5Pb06pvBGvl5gQ0B48dJlslXvoTg==}
 
@@ -477,6 +507,10 @@ packages:
 
   util@0.12.5:
     resolution: {integrity: sha512-kZf/K6hEIrWHI6XqOFUiiMa+79wE/D8Q+NCNAWclkyg3b4d2k7s0QGepNjiABc+aR3N1PAyHL7p6UcLY6LmrnA==}
+
+  uuid@10.0.0:
+    resolution: {integrity: sha512-8XkAphELsDnEGrDxUOHB3RGvXz6TeuYSGEZBOjtTtPm2lwhGBjLgOzLHB63IUWfBpNucQjND6d3AOudO+H3RWQ==}
+    hasBin: true
 
   uuid@8.0.0:
     resolution: {integrity: sha512-jOXGuXZAWdsTH7eZLtyXMqUb9EcWMGZNbL9YcGBJl4MH4nrxHmZJhEHvyLFrkxo+28uLb/NYRcStH48fnD0Vzw==}
@@ -816,6 +850,15 @@ snapshots:
       mnemonist: 0.38.3
       tslib: 2.7.0
 
+  '@aws-sdk/lib-dynamodb@3.665.0(@aws-sdk/client-dynamodb@3.665.0)':
+    dependencies:
+      '@aws-sdk/client-dynamodb': 3.665.0
+      '@aws-sdk/util-dynamodb': 3.665.0(@aws-sdk/client-dynamodb@3.665.0)
+      '@smithy/core': 2.4.8
+      '@smithy/smithy-client': 3.4.0
+      '@smithy/types': 3.5.0
+      tslib: 2.7.0
+
   '@aws-sdk/middleware-endpoint-discovery@3.664.0':
     dependencies:
       '@aws-sdk/endpoint-cache': 3.572.0
@@ -875,6 +918,11 @@ snapshots:
   '@aws-sdk/types@3.664.0':
     dependencies:
       '@smithy/types': 3.5.0
+      tslib: 2.7.0
+
+  '@aws-sdk/util-dynamodb@3.665.0(@aws-sdk/client-dynamodb@3.665.0)':
+    dependencies:
+      '@aws-sdk/client-dynamodb': 3.665.0
       tslib: 2.7.0
 
   '@aws-sdk/util-endpoints@3.664.0':
@@ -1176,6 +1224,10 @@ snapshots:
       '@smithy/types': 3.5.0
       tslib: 2.7.0
 
+  '@types/aws-lambda@8.10.145': {}
+
+  '@types/uuid@10.0.0': {}
+
   argparse@1.0.10:
     dependencies:
       sprintf-js: 1.0.3
@@ -1351,6 +1403,8 @@ snapshots:
       is-generator-function: 1.0.10
       is-typed-array: 1.1.13
       which-typed-array: 1.1.15
+
+  uuid@10.0.0: {}
 
   uuid@8.0.0: {}
 
