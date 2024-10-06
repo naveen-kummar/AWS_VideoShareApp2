@@ -14,6 +14,7 @@
 
 import { handler } from "../putHandler";
 import {DB} from "../../lib/db";
+import { S3 } from "../../lib/s3";
 
 describe("Test for the Video Put Handler", () => {
 
@@ -56,6 +57,23 @@ describe("Test for the Video Put Handler", () => {
         });
 
         expect(spySave).toBeCalled();
+
+    });
+
+    test('should call the function to generate pre-signed url and send that in the body', async () => {
+        const spyGetUploadUrl = jest.spyOn(S3.prototype, 'getUploadUrl')
+        spyGetUploadUrl.mockImplementation(() => "http://upload-url")
+
+        const res = await (handler as any)({
+            body: JSON.stringify({
+                userId: "user-123",
+                title: "Cat-video",
+            }),
+        });
+
+        expect(spyGetUploadUrl).toBeCalledTimes(1)
+
+        expect(JSON.parse(res.body).uploadUrl).toBe("http://upload-url")
 
     });
 });

@@ -1,8 +1,10 @@
 import {APIGatewayProxyHandler} from 'aws-lambda';
 import {DB} from '../lib/db';
+import {S3} from '../lib/s3'
 import {z} from "zod";
 
 const db = new DB();
+const s3 = new S3();
 
 const bodySchema = z.object({
     userId : z.string(),
@@ -17,10 +19,14 @@ export const handler: APIGatewayProxyHandler = async (e) => {
     try {
         const {userId} = bodySchema.parse(body);
         const dbInput = {userId}
-        db.save(dbInput);
+        await db.save(dbInput);
+        const uploadUrl = s3.getUploadUrl();
+
         return {
-            body: "Success!!",
             statusCode: 200,
+            body : JSON.stringify({
+                uploadUrl,
+            }),
         };
     }catch (error){
         return {
