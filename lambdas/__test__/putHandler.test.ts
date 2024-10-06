@@ -42,4 +42,20 @@ describe("Test for the Video Put Handler", () => {
         expect(spySave).toBeCalled();
 
     });
+
+    test('Should call the save method', async () => {
+        const spySave = jest.spyOn(DB.prototype, "save");
+
+        spySave.mockImplementation(async () => {});
+
+        const res = await (handler as any)({
+            body: JSON.stringify({
+                userId: "user-123",
+                title: "Cat-video",
+            }),
+        });
+
+        expect(spySave).toBeCalled();
+
+    });
 });

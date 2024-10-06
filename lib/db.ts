@@ -1,3 +1,3 @@
 export class DB{
-    async save() {}
+    async save(doc : any) {}
 }
