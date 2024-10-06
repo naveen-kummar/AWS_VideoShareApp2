@@ -1,5 +1,8 @@
 {
 	"dependencies": {
 		"@aws-sdk/client-dynamodb": "^3.665.0"
+	},
+	"devDependencies": {
+		"aws-lambda": "^1.0.7"
 	}
 }
