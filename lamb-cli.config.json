@@ -1,0 +1,1 @@
+{"functions":[{"name":"putHandler","arn":"arn:aws:lambda:ap-south-1:086505785551:function:vidshare-put-handler","region":"ap-south-1","entryFile":"lambdas\\putHandler.js"}]}
