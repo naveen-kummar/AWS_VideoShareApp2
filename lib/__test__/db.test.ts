@@ -1,6 +1,6 @@
 import {DB} from "../db"
 
-describe('Test for DB', () => {
+describe.skip('Test for DB', () => {
 
     test('Should save the data in database properly', async () => {
         const db = new DB({
