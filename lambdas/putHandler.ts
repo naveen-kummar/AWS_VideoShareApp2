@@ -3,7 +3,10 @@ import {DB} from '../lib/db';
 import {S3} from '../lib/s3'
 import {z} from "zod";
 
-const db = new DB();
+const db = new DB({
+    region: "ap-south-1",
+    tableName: "vidshare-video",
+});
 const s3 = new S3();
 
 const bodySchema = z.object({

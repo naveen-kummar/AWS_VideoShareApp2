@@ -18,6 +18,11 @@ import { S3 } from "../../lib/s3";
 
 describe("Test for the Video Put Handler", () => {
 
+    beforeEach(() =>{
+        jest.spyOn(DB.prototype, "save").mockImplementation((() => {}) as any)
+        jest.spyOn(S3.prototype, "getUploadUrl").mockImplementation((() => "url") as any)
+    })
+
     afterEach(() => {
         //restore the spy created with SpyOn
         jest.resetAllMocks();
@@ -31,7 +36,7 @@ describe("Test for the Video Put Handler", () => {
     test('Should call db Save function if proper body is passed', async () => {
         const spySave = jest.spyOn(DB.prototype, "save");
 
-        spySave.mockImplementation(async () => {});
+        spySave.mockImplementation( (async () => {}) as any );
 
         const res = await (handler as any)({
             body: JSON.stringify({
@@ -47,7 +52,7 @@ describe("Test for the Video Put Handler", () => {
     test('Should call the save method', async () => {
         const spySave = jest.spyOn(DB.prototype, "save");
 
-        spySave.mockImplementation(async () => {});
+        spySave.mockImplementation((async () => {}) as any);
 
         const res = await (handler as any)({
             body: JSON.stringify({
