@@ -1,6 +1,6 @@
 import {DB} from "../db"
 
-describe.skip('Test for DB', () => {
+describe.skip ('Test for DB', () => {
 
     test('Should save the data in database properly', async () => {
         const db = new DB({
@@ -9,8 +9,9 @@ describe.skip('Test for DB', () => {
         })
 
         const res = await db.save({
-            id: "test-123",
-            userId: "user-12",
+            id: "test-127",
+            userId: "user-17",
+            tags: undefined,
         });
 
         console.log(res);
