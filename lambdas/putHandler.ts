@@ -1,7 +1,9 @@
 import {APIGatewayProxyHandler} from 'aws-lambda';
 import {DB} from '../lib/db';
 import {S3} from '../lib/s3'
+import {v4} from "uuid";
 import {z} from "zod";
+import { video } from '../entity/video';
 
 const db = new DB({
     region: "ap-south-1",
@@ -20,9 +22,17 @@ export const handler: APIGatewayProxyHandler = async (e) => {
     const body = JSON.parse(e.body || "{}");
 
     try {
-        const {userId} = bodySchema.parse(body);
-        const dbInput = {userId}
-        await db.save(dbInput);
+        const {title, userId, description, tags} = bodySchema.parse(body);
+        const videoDoc: z.infer<typeof video> = {
+            id : v4(),
+            status: 'NOT_UPLOADED',
+            title,
+            userId,
+            uploadTime: Date.now(),
+            description,
+            tags
+        };
+        await db.save(videoDoc);
         const uploadUrl = s3.getUploadUrl();
 
         return {
