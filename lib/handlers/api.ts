@@ -20,7 +20,7 @@ export const withBodyValidation = <T extends ZodSchema>({schema, handler} : {
                 const body = schema.parse(JSON.parse(e.body || "{}"))
                 const res = await handler(body, e)
                 return {
-                    body: JSON.stringify(e),
+                    body: JSON.stringify(res),
                     statusCode : 200
                 }
             }catch (error) {
