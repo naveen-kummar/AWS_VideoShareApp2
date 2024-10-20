@@ -1,5 +1,5 @@
 import { APIGatewayEvent, APIGatewayProxyHandler } from "aws-lambda"
-import {z, ZodSchema } from "zod"
+import {z, ZodError, ZodSchema } from "zod"
 
 
 
@@ -18,13 +18,28 @@ export const withBodyValidation = <T extends ZodSchema>({schema, handler} : {
 
             try{
                 const body = schema.parse(JSON.parse(e.body || "{}"))
+                console.log("API_Test About to do Haldler call")
                 const res = await handler(body, e)
+                console.log("API_Test Done Haldler call")
                 return {
                     body: JSON.stringify(res),
                     statusCode : 200
                 }
             }catch (error) {
+
                 // zodError
+
+                if(error instanceof ZodError)
+                {
+                    console.log("API_Test Received Zod Error")
+                    return{
+                        statusCode : 400,
+                        body: error.errors.reduce((a, c) => {
+                            a += '${c.path} - ${c.message}, ';
+                            return a;
+                        }, ""),
+                    };
+                }
 
                 // known error
 
