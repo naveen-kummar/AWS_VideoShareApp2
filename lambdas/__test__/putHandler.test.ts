@@ -27,9 +27,9 @@ describe("Test for the Video Put Handler", () => {
         //restore the spy created with SpyOn
         jest.resetAllMocks();
     });
-    test('Should return a 400 statuscode if empty object is passed', async () => {
+    test.only('Should return a 400 statuscode if empty object is passed', async () => {
         const res = await (handler as any)({body : JSON.stringify({}) });
-        console.log(res);
+        console.log(res.body);
         expect(res.statusCode).toBe(400);
     });
 

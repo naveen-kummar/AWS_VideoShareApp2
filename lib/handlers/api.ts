@@ -17,10 +17,10 @@ export const withBodyValidation = <T extends ZodSchema>({schema, handler} : {
         const apiGatewayProxyHandler: APIGatewayProxyHandler = async (e)=> {
 
             try{
+                const eData = JSON.parse(e.body || "{}");
                 const body = schema.parse(JSON.parse(e.body || "{}"))
-                console.log("API_Test About to do Haldler call")
                 const res = await handler(body, e)
-                console.log("API_Test Done Haldler call")
+
                 return {
                     body: JSON.stringify(res),
                     statusCode : 200
@@ -31,11 +31,10 @@ export const withBodyValidation = <T extends ZodSchema>({schema, handler} : {
 
                 if(error instanceof ZodError)
                 {
-                    console.log("API_Test Received Zod Error")
                     return{
                         statusCode : 400,
                         body: error.errors.reduce((a, c) => {
-                            a += '${c.path} - ${c.message}, ';
+                             a += `${c.path} - ${c.message}, `;  // Template literal
                             return a;
                         }, ""),
                     };
