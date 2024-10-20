@@ -1,0 +1,1 @@
+{"version":3,"file":"s3.js","sourceRoot":"","sources":["../../lib/s3.ts"],"names":[],"mappings":";;;AAAA,MAAa,EAAE;IACX,YAAY,KAAI,CAAC;CACpB;AAFD,gBAEC","sourcesContent":["export class S3{\r\n    getUploadUrl() {}\r\n}\r\n"]}

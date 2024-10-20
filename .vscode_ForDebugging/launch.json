@@ -1,0 +1,17 @@
+{
+    "version": "0.2.0",
+    "configurations": [
+      {
+        "name": "Launch TypeScript",
+        "type": "node",
+        "request": "launch",
+        "program": "${workspaceFolder}/dist/lambdas/putHandler.js", // Change to your main JS file
+        "preLaunchTask": "tsc: build - tsconfig.json", // Compiles TypeScript before running
+        "outFiles": ["${workspaceFolder}/dist/**/*.js"], // Match output files
+        "sourceMaps": true,  // Enable source map support
+        "console": "integratedTerminal",
+        "internalConsoleOptions": "neverOpen"
+      }
+    ]
+  }
+  
