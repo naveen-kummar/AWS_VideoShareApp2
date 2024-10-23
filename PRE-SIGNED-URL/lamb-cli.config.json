@@ -1,0 +1,1 @@
+{"functions":[{"name":"test-pre-sign","arn":"arn:aws:lambda:ap-south-1:086505785551:function:test-pre-sign","region":"ap-south-1","entryFile":"index.ts"}]}
