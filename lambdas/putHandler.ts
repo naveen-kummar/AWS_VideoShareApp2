@@ -11,7 +11,10 @@ const db = new DB({
     region: "ap-south-1",
     tableName: "vidshare-video",
 });
-const s3 = new S3();
+const s3 = new S3({
+    bucketName : "vidshare-upload-bucket-naveen",
+    region : 'ap-south-1'
+});
 
 
 export const handler = withBodyValidation({
@@ -23,8 +26,10 @@ schema :  z.object({
 }),
 async handler({title, userId, description, tags}){
 
+    const id = v4();
+
     await db.save(createVideoDoc({
-        id : v4(),
+        id ,
         status: 'NOT_UPLOADED',
         title,
         userId,
@@ -34,7 +39,10 @@ async handler({title, userId, description, tags}){
     }));
 
     return {
-        uploadUrl : s3.getUploadUrl()
+        uploadUrl : await s3.getUploadUrl({
+            key : id,
+            expiresIn : 60 * 10
+        })
     }
 }
 })

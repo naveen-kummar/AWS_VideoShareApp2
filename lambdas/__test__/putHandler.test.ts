@@ -29,7 +29,7 @@ describe("Test for the Video Put Handler", () => {
     });
     test.only('Should return a 400 statuscode if empty object is passed', async () => {
         const res = await (handler as any)({body : JSON.stringify({}) });
-        console.log(res.body);
+        console.log(res);
         expect(res.statusCode).toBe(400);
     });
 
@@ -67,7 +67,7 @@ describe("Test for the Video Put Handler", () => {
 
     test('should call the function to generate pre-signed url and send that in the body', async () => {
         const spyGetUploadUrl = jest.spyOn(S3.prototype, 'getUploadUrl')
-        spyGetUploadUrl.mockImplementation(() => "http://upload-url")
+        spyGetUploadUrl.mockImplementation(async () => "http://upload-url")
 
         const res = await (handler as any)({
             body: JSON.stringify({
