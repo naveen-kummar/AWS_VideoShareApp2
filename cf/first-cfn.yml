@@ -1,0 +1,17 @@
+AWSTemplateFormatVersion: "2010-09-09"
+Resources:
+ myDynamoDBTable:
+  Type: AWS::DynamoDB::Table
+  Properties:
+    TableName: "TableWithCloudFormation"
+    BillingMode: "PAY_PER_REQUEST"
+    AttributeDefinitions:
+      - AttributeName: "Album"
+        AttributeType: "S"
+      - AttributeName: "Artist"
+        AttributeType: "S"  
+    KeySchema:
+      - AttributeName: "Album"
+        KeyType: "HASH"
+      - AttributeName: "Artist"
+        KeyType: "RANGE"        
