@@ -1,8 +1,8 @@
 import {APIGatewayProxyHandler} from 'aws-lambda';
 import {DB} from '../lib/db';
 import {S3} from '../lib/s3'
-import {v4} from "uuid";
-import {z} from "zod";
+import {v4} from 'uuid';
+import {z} from 'zod';
 import { createDoc as createVideoDoc } from '../entity/video';
 import { withBodyValidation } from '../lib/handlers/api';
 
