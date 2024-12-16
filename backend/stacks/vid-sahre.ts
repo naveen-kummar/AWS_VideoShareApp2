@@ -36,9 +36,8 @@ export class VidShareAppStack extends cdk.Stack {
     const putHandler = new lambdaFn.NodejsFunction(this, "PutHandler", {
       entry: resolve(__dirname, "../../lambdas/putHandler.ts"),
       bundling: {
-        externalModules: [ 'zod', '@smithy/core', '@aws-sdk/core'] // Mark as external
-
-      },
+        externalModules: [ 'uuid', 'zod',  '@aws-sdk/core'] // Mark as external
+      }, //'@smithy/core',
     });
 
     // Upload Video Bucket (S3)

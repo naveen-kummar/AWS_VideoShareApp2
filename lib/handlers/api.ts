@@ -43,10 +43,11 @@ export const withBodyValidation = <T extends ZodSchema>({schema, handler} : {
                 // known error
 
                 // unknown error
+                console.log(error);
 
                 return {
                     body: "Something went wrong",
-                    statusCode: 400,
+                    statusCode: 500,
                 };
 
             }

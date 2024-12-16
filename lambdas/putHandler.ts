@@ -1,4 +1,4 @@
-import {APIGatewayProxyHandler} from 'aws-lambda';
+//import {APIGatewayProxyHandler} from 'aws-lambda';
 import {DB} from '../lib/db';
 import {S3} from '../lib/s3'
 import {v4} from 'uuid';
