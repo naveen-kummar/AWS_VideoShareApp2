@@ -13,6 +13,7 @@ export class DB{
         region: string;
     }
 ) {
+    
         this.client = DynamoDBDocumentClient.from(new DynamoDBClient({
             region : this.config.region,
         }), {
@@ -24,6 +25,7 @@ export class DB{
     }
     async save(doc : any) {
 
+        console.log("NaveenAwsLog - Inside dbts - save func");
          return this.client.send(new PutCommand({
             TableName : this.config.tableName,
             Item : doc,

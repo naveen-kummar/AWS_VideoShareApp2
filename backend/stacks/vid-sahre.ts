@@ -35,8 +35,9 @@ export class VidShareAppStack extends cdk.Stack {
     //4.  Put Handler
     const putHandler = new lambdaFn.NodejsFunction(this, "PutHandler", {
       entry: resolve(__dirname, "../../lambdas/putHandler.ts"),
+      handler: "handler",
       bundling: {
-        externalModules: [ 'uuid', 'zod',  '@aws-sdk/core'] // Mark as external
+        nodeModules: [ 'uuid', 'zod', '@smithy/core' ,'@aws-sdk/core'], // Mark as external
       }, //'@smithy/core',
     });
 

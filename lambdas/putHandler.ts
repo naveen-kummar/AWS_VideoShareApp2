@@ -26,6 +26,8 @@ schema :  z.object({
 }),
 async handler({title, userId, description, tags}){
 
+    console.log("NaveenAwsLog - Inside putHandlerts - handler func");
+
     const id = v4();
 
     await db.save(createVideoDoc({
