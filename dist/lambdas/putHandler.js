@@ -18,12 +18,12 @@ const zod_1 = require("zod");
 const video_1 = require("../entity/video");
 const api_1 = require("../lib/handlers/api");
 const db = new db_1.DB({
-    region: process.env.VIDEO_TABLE_REGION || "ap-south-1",
-    tableName: process.env.VIDEO_TABLE_NAME || "test-table",
+    region: process.env.VIDEO_TABLE_REGION,
+    tableName: process.env.VIDEO_TABLE_NAME,
 });
 const s3 = new s3_1.S3({
-    bucketName: process.env.UPLOAD_BUCKET_NAME || "test-bucket",
-    region: process.env.UPLOAD_BUCKET_REGION || 'ap-south-1'
+    bucketName: process.env.UPLOAD_BUCKET_NAME,
+    region: process.env.UPLOAD_BUCKET_REGION
 });
 exports.handler = (0, api_1.withBodyValidation)({
     schema: zod_1.z.object({

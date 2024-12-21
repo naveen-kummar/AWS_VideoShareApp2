@@ -5,15 +5,17 @@ import {v4} from 'uuid';
 import {z} from 'zod';
 import { createDoc as createVideoDoc } from '../entity/video';
 import { withBodyValidation } from '../lib/handlers/api';
+import {PutHandler as Env} from "../lib/lambdaEnv"
 
+const env = process.env as Env
 
 const db = new DB({
-    region: process.env.VIDEO_TABLE_REGION || "ap-south-1",
-    tableName: process.env.VIDEO_TABLE_NAME || "test-table",
+    region: env.VIDEO_TABLE_REGION || "ap-south-1",
+    tableName: env.VIDEO_TABLE_NAME || "test-table",
 });
 const s3 = new S3({
-    bucketName : process.env.UPLOAD_BUCKET_NAME || "test-bucket",
-    region : process.env.UPLOAD_BUCKET_REGION || 'ap-south-1'
+    bucketName : env.UPLOAD_BUCKET_NAME || "test-bucket",
+    region : env.UPLOAD_BUCKET_REGION || 'ap-south-1'
 });
 
 

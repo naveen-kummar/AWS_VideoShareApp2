@@ -5,6 +5,7 @@ import * as apigateway from "aws-cdk-lib/aws-apigateway";
 import * as dynamodb from "aws-cdk-lib/aws-dynamodb";
 import { Construct } from 'constructs';
 import {resolve} from 'path'
+import * as LambdaEnvType from "../../lib/lambdaEnv"
 
 
 
@@ -32,19 +33,28 @@ export class VidShareAppStack extends cdk.Stack {
       sortKey: { name: 'uploadedTime', type: dynamodb.AttributeType.NUMBER },
     });
 
+    // Upload Video Bucket (S3)
+    const uploadBucket = new s3.Bucket(this, "UploadBucket", {
+      removalPolicy: cdk.RemovalPolicy.DESTROY //Need to explicity mention that this s3 bucket need to be destroyed during "CDK Destroy"
+    });
+
     //4.  Put Handler
+    const putHandlerEnv : LambdaEnvType.PutHandler = {
+        VIDEO_TABLE_NAME : table.tableName,
+        VIDEO_TABLE_REGION : this.region,
+        UPLOAD_BUCKET_NAME : uploadBucket.bucketName,
+        UPLOAD_BUCKET_REGION : this.region,
+    }
     const putHandler = new lambdaFn.NodejsFunction(this, "PutHandler", {
       entry: resolve(__dirname, "../../lambdas/putHandler.ts"),
       handler: "handler",
       bundling: {
         nodeModules: [ 'uuid', 'zod', '@smithy/core' ,'@aws-sdk/core'], // Mark as external
-      }, //'@smithy/core',
+      }, 
+      environment: putHandlerEnv,
     });
 
-    // Upload Video Bucket (S3)
-    const uploadBucket = new s3.Bucket(this, "UploadBucket", {
-      removalPolicy: cdk.RemovalPolicy.DESTROY //Need to explicity mention that this s3 bucket need to be destroyed during "CDK Destroy"
-    });
+
 
     //1. API Gateway
     const mainApi = new apigateway.RestApi(this, 'VidShareMainApi', {
