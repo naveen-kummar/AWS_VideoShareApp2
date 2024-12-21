@@ -36,7 +36,7 @@ describe("Test for the Video Put Handler", () => {
     });
     test.only('Should return a 400 statuscode if empty object is passed', () => __awaiter(void 0, void 0, void 0, function* () {
         const res = yield putHandler_1.handler({ body: JSON.stringify({}) });
-        console.log(res.body);
+        console.log(res);
         expect(res.statusCode).toBe(400);
     }));
     test('Should call db Save function if proper body is passed', () => __awaiter(void 0, void 0, void 0, function* () {
@@ -63,7 +63,7 @@ describe("Test for the Video Put Handler", () => {
     }));
     test('should call the function to generate pre-signed url and send that in the body', () => __awaiter(void 0, void 0, void 0, function* () {
         const spyGetUploadUrl = jest.spyOn(s3_1.S3.prototype, 'getUploadUrl');
-        spyGetUploadUrl.mockImplementation(() => "http://upload-url");
+        spyGetUploadUrl.mockImplementation(() => __awaiter(void 0, void 0, void 0, function* () { return "http://upload-url"; }));
         const res = yield putHandler_1.handler({
             body: JSON.stringify({
                 userId: "user-123",

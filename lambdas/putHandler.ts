@@ -8,12 +8,12 @@ import { withBodyValidation } from '../lib/handlers/api';
 
 
 const db = new DB({
-    region: "ap-south-1",
-    tableName: "vidshare-video",
+    region: process.env.VIDEO_TABLE_REGION || "ap-south-1",
+    tableName: process.env.VIDEO_TABLE_NAME || "test-table",
 });
 const s3 = new S3({
-    bucketName : "vidshare-upload-bucket-naveen",
-    region : 'ap-south-1'
+    bucketName : process.env.UPLOAD_BUCKET_NAME || "test-bucket",
+    region : process.env.UPLOAD_BUCKET_REGION || 'ap-south-1'
 });
 
 

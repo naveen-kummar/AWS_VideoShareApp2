@@ -25,6 +25,7 @@ class DB {
     }
     save(doc) {
         return __awaiter(this, void 0, void 0, function* () {
+            console.log("NaveenAwsLog - Inside dbts - save func");
             return this.client.send(new lib_dynamodb_1.PutCommand({
                 TableName: this.config.tableName,
                 Item: doc,

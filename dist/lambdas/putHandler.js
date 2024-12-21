@@ -10,6 +10,7 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.handler = void 0;
+//import {APIGatewayProxyHandler} from 'aws-lambda';
 const db_1 = require("../lib/db");
 const s3_1 = require("../lib/s3");
 const uuid_1 = require("uuid");
@@ -17,10 +18,13 @@ const zod_1 = require("zod");
 const video_1 = require("../entity/video");
 const api_1 = require("../lib/handlers/api");
 const db = new db_1.DB({
-    region: "ap-south-1",
-    tableName: "vidshare-video",
+    region: process.env.VIDEO_TABLE_REGION || "ap-south-1",
+    tableName: process.env.VIDEO_TABLE_NAME || "test-table",
 });
-const s3 = new s3_1.S3();
+const s3 = new s3_1.S3({
+    bucketName: process.env.UPLOAD_BUCKET_NAME || "test-bucket",
+    region: process.env.UPLOAD_BUCKET_REGION || 'ap-south-1'
+});
 exports.handler = (0, api_1.withBodyValidation)({
     schema: zod_1.z.object({
         userId: zod_1.z.string(),
@@ -30,9 +34,10 @@ exports.handler = (0, api_1.withBodyValidation)({
     }),
     handler(_a) {
         return __awaiter(this, arguments, void 0, function* ({ title, userId, description, tags }) {
-            console.log("PutHandler_Test About to do DB Save call");
+            console.log("NaveenAwsLog - Inside putHandlerts - handler func");
+            const id = (0, uuid_1.v4)();
             yield db.save((0, video_1.createDoc)({
-                id: (0, uuid_1.v4)(),
+                id,
                 status: 'NOT_UPLOADED',
                 title,
                 userId,
@@ -40,9 +45,11 @@ exports.handler = (0, api_1.withBodyValidation)({
                 description,
                 tags,
             }));
-            console.log("PutHandler_Test Done DB Save call");
             return {
-                uploadUrl: s3.getUploadUrl()
+                uploadUrl: yield s3.getUploadUrl({
+                    key: id,
+                    expiresIn: 60 * 10
+                })
             };
         });
     }

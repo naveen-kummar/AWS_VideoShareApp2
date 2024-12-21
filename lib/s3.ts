@@ -18,17 +18,16 @@ export class S3{
     }
 
     getUploadUrl({key, expiresIn} : {
-        key : string;
+        key : string,
         expiresIn : number
     }) {
         console.log("NaveenAwsLog - Inside s3ts - getUploadUrl func");
+        
         return getSignedUrl(
         this.client, 
         new PutObjectCommand({
             Bucket : this.config.bucketName,
-            Key : key
-        }), {
-            expiresIn,
-        })
+            Key : key,
+        }), {expiresIn})
     }
 }

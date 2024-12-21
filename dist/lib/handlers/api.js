@@ -19,17 +19,12 @@ Input: schema - Zod Schema
        handler - Main Handler which will be trihggerred by AWS Lambda upon the API PUT Call
 */
 const withBodyValidation = ({ schema, handler }) => {
-    console.log("API_Test Just entered withBodyValidation");
+    console.log("NaveenAwsLog - Inside apits - handler func");
     const apiGatewayProxyHandler = (e) => __awaiter(void 0, void 0, void 0, function* () {
         try {
-            console.log("API_Test About to eData");
             const eData = JSON.parse(e.body || "{}");
-            console.log(eData);
-            console.log("API_Test About to parse schema");
             const body = schema.parse(JSON.parse(e.body || "{}"));
-            console.log("API_Test About to do Haldler call");
             const res = yield handler(body, e);
-            console.log("API_Test Done Haldler call");
             return {
                 body: JSON.stringify(res),
                 statusCode: 200
@@ -38,22 +33,20 @@ const withBodyValidation = ({ schema, handler }) => {
         catch (error) {
             // zodError
             if (error instanceof zod_1.ZodError) {
-                console.log("API_Test Received Zod Error");
                 return {
                     statusCode: 400,
                     body: error.errors.reduce((a, c) => {
-                        console.log(c);
-                        a += '${c.path} - ${c.message}, ';
-                        console.log(a);
+                        a += `${c.path} - ${c.message}, `; // Template literal
                         return a;
                     }, ""),
                 };
             }
             // known error
             // unknown error
+            console.log(error);
             return {
                 body: "Something went wrong",
-                statusCode: 400,
+                statusCode: 500,
             };
         }
     });
