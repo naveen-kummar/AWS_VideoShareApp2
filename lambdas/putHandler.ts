@@ -1,15 +1,14 @@
 //import {APIGatewayProxyHandler} from 'aws-lambda';
-import {DB} from '../lib/db';
 import {S3} from '../lib/s3'
 import {v4} from 'uuid';
 import {z} from 'zod';
-import { createDoc as createVideoDoc } from '../entity/video';
+import { VideoDB} from '../entity/video';
 import { withBodyValidation } from '../lib/handlers/api';
 import {PutHandler as Env} from "../lib/lambdaEnv"
 
 const env = process.env as Env
 
-const db = new DB({
+const videoDB = new VideoDB({
     region: env.VIDEO_TABLE_REGION || "ap-south-1",
     tableName: env.VIDEO_TABLE_NAME || "test-table",
 });
@@ -32,7 +31,7 @@ async handler({title, userId, description, tags}){
 
     const id = v4();
 
-    await db.save(createVideoDoc({
+    await videoDB.save({
         id ,
         status: 'NOT_UPLOADED',
         title,
@@ -40,7 +39,7 @@ async handler({title, userId, description, tags}){
         uploadTime: Date.now(),
         description,
         tags,
-    }));
+    });
 
     return {
         uploadUrl : await s3.getUploadUrl({

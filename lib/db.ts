@@ -3,7 +3,7 @@ import { PutCommand, DynamoDBDocumentClient } from "@aws-sdk/lib-dynamodb";
 
 
 
-export class DB{
+export class DB<T extends {id: string} >{
 
     private client: DynamoDBDocumentClient;
 
@@ -23,12 +23,16 @@ export class DB{
         }
     );
     }
-    async save(doc : any) {
+    async save(doc : T) {
 
         console.log("NaveenAwsLog - Inside dbts - save func");
          return this.client.send(new PutCommand({
             TableName : this.config.tableName,
             Item : doc,
          }))
+    }
+
+    async update({id, attrs} : {id : string, attrs : Partial<Omit<T, 'id'>>}){
+
     }
 }
