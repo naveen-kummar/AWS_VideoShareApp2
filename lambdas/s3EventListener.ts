@@ -9,10 +9,16 @@ const videoDB = new VideoDB({
 });
 
 export const handler: S3Handler = async (e) => {
-
-    console.log("Inside handler of s3");
+    const id = e.Records[0].s3.object.key;
+    if (id) {
+        console.log("Inside handler of s3 and id is ", id);
+      } else {
+        console.error("Key not found in the event");
+      }
     videoDB.update({
-        id: "",
-        attrs: {},
+        id,
+        attrs: {
+            status: "UPLOADED"
+        },
     });
 };

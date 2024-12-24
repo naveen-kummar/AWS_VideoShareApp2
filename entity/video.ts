@@ -14,7 +14,7 @@ export const docSchema = z.object({
 export const createDoc = (props: z.infer<typeof docSchema>) => {
 return props;
 };
-p
-type DocSchemaType = z.infer<typeof docSchema>;
 
-export class VideoDB extends DB<z.infer<typeof docSchema>> {};
+type DocSchemaType = z.infer<typeof docSchema> & { id: string };
+
+export class VideoDB extends DB<DocSchemaType> {};
