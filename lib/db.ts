@@ -3,7 +3,7 @@ import { PutCommand, DynamoDBDocumentClient } from "@aws-sdk/lib-dynamodb";
 
 
 
-export class DB<T extends {id: string} >{
+export class DB<T extends { id: string }>{
 
     private client: DynamoDBDocumentClient;
 
@@ -33,6 +33,6 @@ export class DB<T extends {id: string} >{
     }
 
     async update({id, attrs} : {id : string, attrs : Partial<Omit<T, 'id'>>}){
-
+        console.log("Inside VideoDB update");
     }
 }
