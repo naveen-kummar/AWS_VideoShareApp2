@@ -48,16 +48,17 @@ export class DB<T extends { id: string }>{
             UpdateExpressionArr.push('#${String(key)} = :${String(key)}');
         });
 
- 
+        return this.client.send(
+            new UpdateCommand({
+                TableName : this.config.tableName,
+                Key : {
+                    id: id, //Input Param
+                },
+                UpdateExpression: 'set $(UpdateExpressionArr.join("," )',
+                ExpressionAttributeNames,
+                ExpressionAttributeValues,
+            })
+        );
 
-        return new UpdateCommand({
-            TableName : this.config.tableName,
-            Key : {
-                id: id, //Input Param
-            },
-            UpdateExpression: 'set $(UpdateExpressionArr.join("," )',
-            ExpressionAttributeNames: {},
-            ExpressionAttributeValues: {},
-        })
     }
 }
