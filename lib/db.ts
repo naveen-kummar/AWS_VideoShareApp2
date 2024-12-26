@@ -15,15 +15,19 @@ export class DB<T extends { id: string }>{
     }
 ) {
     
-        this.client = DynamoDBDocumentClient.from(new DynamoDBClient({
+        const dynamoDBClient = new DynamoDBClient({
             region : this.config.region,
-        }), {
+        });
+        this.client = DynamoDBDocumentClient.from(dynamoDBClient, {
             marshallOptions : {
                 removeUndefinedValues : true,
             },
         }
     );
     }
+
+    /*This function signature is made generic so that we can change 
+    implementation to MongoDB instead of DynamoDB*/
     async save(doc : T) {
 
         console.log("NaveenAwsLog - Inside dbts - save func");
@@ -33,6 +37,8 @@ export class DB<T extends { id: string }>{
          }))
     }
 
+    /*This function signature is made generic so that we can change 
+    implementation to MongoDB instead of DynamoDB*/
     async update({id, attrs} : {id : string, attrs : Partial<Omit<T, 'id'>>}){
         console.log("Inside VideoDB update");
         const UpdateExpressionArr: string[] = []; //set #title = :title, #description = :description
@@ -40,12 +46,12 @@ export class DB<T extends { id: string }>{
         const ExpressionAttributeValues: Record<string, any> = {};
 
         (Object.keys(attrs) as Array<keyof typeof attrs>).forEach((key) => {
-            ExpressionAttributeNames['#${String(key)}'] = key;
+            ExpressionAttributeNames[`#${String(key)}`] = key;
             /*Below line will emit compile warning if you do not use 
             "as Array<keyof typeof attrs>" in above line after "Object.keys(attrs)"
             as key will be of type 'any' instead of string*/
-            ExpressionAttributeValues[':${String(key)}'] = attrs[key]; 
-            UpdateExpressionArr.push('#${String(key)} = :${String(key)}');
+            ExpressionAttributeValues[`:${String(key)}`] = attrs[key]; 
+            UpdateExpressionArr.push(`#${String(key)} = :${String(key)}`);
         });
 
         return this.client.send(
@@ -54,7 +60,7 @@ export class DB<T extends { id: string }>{
                 Key : {
                     id: id, //Input Param
                 },
-                UpdateExpression: 'set $(UpdateExpressionArr.join("," )',
+                UpdateExpression: `set ${UpdateExpressionArr.join(", ")}`,
                 ExpressionAttributeNames,
                 ExpressionAttributeValues,
             })

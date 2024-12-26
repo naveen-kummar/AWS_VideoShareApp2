@@ -53,5 +53,15 @@ describe ('Test for DB', () => {
         const input = mockedSend.mock.calls[0][0].input as any;//without 'as any' in below line 'input.UpdateExpression' will be yelling with error
         expect(input.UpdateExpression).toBe(
             "set #title = :title, #description = :description");
+
+        expect(input.ExpressionAttributeNames).toEqual({
+            "#title": "title",
+            "#description": "description",
+        });
+
+        expect(input.ExpressionAttributeValues).toEqual({
+            ":title": "new-title",
+            ":description": "new-description",
+        });
     });
 });
