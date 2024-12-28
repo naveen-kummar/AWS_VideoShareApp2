@@ -57,8 +57,8 @@ export class VidShareAppStack extends cdk.Stack {
 
     //5. S3EventListener Handler
     const s3EventListenerEnv: LambdaEnvType.S3EventListener = {
-      VIDEO_TABLE_REGION : table.tableName,
-      VIDEO_TABLE_NAME : this.region
+      VIDEO_TABLE_REGION : this.region,
+      VIDEO_TABLE_NAME : table.tableName
     };
     const s3EventListener = new lambdaFn.NodejsFunction(this, "s3EventListener", {
       entry: resolve(__dirname, "../../lambdas/s3EventListener.ts"),
