@@ -1,11 +1,13 @@
 
 import { VideoDB } from '../entity/video';
 import {S3Handler} from 'aws-lambda'
+import {S3EventListener as Env} from '../lib/lambdaEnv'
 
+const env = process.env as Env;
 
 const videoDB = new VideoDB({
-    region: "ap-south-1",
-    tableName:  "test-table",
+    region: env.VIDEO_TABLE_REGION,
+    tableName:  env.VIDEO_TABLE_NAME,
 });
 
 export const handler: S3Handler = async (e) => {
@@ -15,7 +17,7 @@ export const handler: S3Handler = async (e) => {
       } else {
         console.error("Key not found in the event");
       }
-    videoDB.update({
+    await videoDB.update({
         id,
         attrs: {
             status: "UPLOADED"

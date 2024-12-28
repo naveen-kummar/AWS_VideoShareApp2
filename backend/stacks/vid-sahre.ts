@@ -1,6 +1,7 @@
 import * as cdk from 'aws-cdk-lib';
 import * as lambdaFn from 'aws-cdk-lib/aws-lambda-nodejs'
 import * as s3 from 'aws-cdk-lib/aws-s3'
+import * as s3Notification from 'aws-cdk-lib/aws-s3-notifications'
 import * as apigateway from "aws-cdk-lib/aws-apigateway";
 import * as dynamodb from "aws-cdk-lib/aws-dynamodb";
 import { Construct } from 'constructs';
@@ -54,7 +55,22 @@ export class VidShareAppStack extends cdk.Stack {
       environment: putHandlerEnv,
     });
 
+    //5. S3EventListener Handler
+    const s3EventListenerEnv: LambdaEnvType.S3EventListener = {
+      VIDEO_TABLE_REGION : table.tableName,
+      VIDEO_TABLE_NAME : this.region
+    };
+    const s3EventListener = new lambdaFn.NodejsFunction(this, "s3EventListener", {
+      entry: resolve(__dirname, "../../lambdas/s3EventListener.ts"),
+      handler: "handler",
+      bundling: {
+        nodeModules: [ 'uuid', 'zod', '@smithy/core' ,'@aws-sdk/core'], // Mark as external
+      }, 
+      environment: s3EventListenerEnv,
+    });
 
+    //5.1 Send s3 event notification to our lambda
+    uploadBucket.addObjectCreatedNotification(new s3Notification.LambdaDestination(s3EventListener));
 
     //1. API Gateway
     const mainApi = new apigateway.RestApi(this, 'VidShareMainApi', {
@@ -79,6 +95,7 @@ export class VidShareAppStack extends cdk.Stack {
 
     //Provide access to putHandler to update dynamodb table and put data in to s3
     table.grantWriteData(putHandler);
+    table.grantWriteData(s3EventListener);
     uploadBucket.grantPut(putHandler);
 
   
