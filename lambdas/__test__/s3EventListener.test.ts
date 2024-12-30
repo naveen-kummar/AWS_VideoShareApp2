@@ -7,7 +7,6 @@ TODO:
 
 */
 //import {DB} from "../../lib/db";
-import { clearScreenDown } from 'readline';
 import { VideoDB } from '../../entity/video'
 import { VideoMetadata } from '../../lib/video-metadata'
 import { handler } from '../s3EventListener';

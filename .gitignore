@@ -408,3 +408,9 @@ cdk.out
 
 # Skip dist folder
 dist/
+
+# Ignore JavaScript files
+*.js
+
+# Ignore source map files
+*.map

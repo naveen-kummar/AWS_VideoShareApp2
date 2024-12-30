@@ -35,7 +35,7 @@ export class S3{
         key : string,
         expiresIn : number
     }) {
-        console.log("NaveenAwsLog - Inside s3ts - getUploadUrl func");
+        console.log("NaveenAwsLog - Inside s3ts - getDownloadUrl func");
         
         return getSignedUrl(
         this.client, 
