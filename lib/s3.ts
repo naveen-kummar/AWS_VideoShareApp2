@@ -1,4 +1,4 @@
-import { S3Client, PutObjectCommand } from "@aws-sdk/client-s3";
+import { S3Client, PutObjectCommand, GetObjectCommand } from "@aws-sdk/client-s3";
 import { getSignedUrl } from "@aws-sdk/s3-request-presigner";
 
 
@@ -30,4 +30,18 @@ export class S3{
             Key : key,
         }), {expiresIn})
     }
+
+    getDownloadUrl({key, expiresIn} : {
+        key : string,
+        expiresIn : number
+    }) {
+        console.log("NaveenAwsLog - Inside s3ts - getUploadUrl func");
+        
+        return getSignedUrl(
+        this.client, 
+        new GetObjectCommand({
+            Bucket : this.config.bucketName,
+            Key : key,
+        }), {expiresIn})
+    }    
 }

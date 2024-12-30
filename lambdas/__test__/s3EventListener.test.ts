@@ -6,8 +6,10 @@ TODO:
 - Processing the Video file
 
 */
-import {DB} from "../../lib/db";
+//import {DB} from "../../lib/db";
+import { clearScreenDown } from 'readline';
 import { VideoDB } from '../../entity/video'
+import { VideoMetadata } from '../../lib/video-metadata'
 import { handler } from '../s3EventListener';
 
 function getEvent(bucketname: string, key: string){
@@ -60,15 +62,35 @@ function getEvent(bucketname: string, key: string){
 }
 
 describe ("Tests for S3EventListener", () => {
-    test("It should call the update method withthe correct metadata", async () => {
-        //Let's create a spy
-        const mockUpdate = jest.spyOn(VideoDB.prototype, "update");
-        
-        const res = await (handler as any)(getEvent("test-bucket", "id-123"));
 
-        console.log("Done await handler in s3EventListener");
+   const mockUpdate = jest.spyOn(VideoDB.prototype, "update");
+   const mockedGetMetadata = jest.spyOn(VideoMetadata.prototype, "frommUrl")
+   beforeEach(async() => {
+      console.log("Inside beforeEach - About to call getEvent");
+    mockUpdate.mockImplementation(async () => undefined as any);
+    await (handler as any)(getEvent("test-bucket", "id-123"));
+   })
+   
+   afterEach(() => {
+      console.log("Inside afterEach - resetAllMocks");
+    jest.resetAllMocks()
+   })
+
+    //TestCase - 1
+    test("It should call the update method withthe correct metadata", () => {
+        //Let's create a spy
+          console.log("Done await handler in s3EventListener");
         expect(mockUpdate).toHaveBeenCalledTimes(1);
         expect(mockUpdate.mock.calls[0][0].id).toBe("id-123");
         expect(mockUpdate.mock.calls[0][0].attrs.status).toBe("UPLOADED");
+    });
+
+    //TestCase -2 
+    test("Should get the url properly and send to the getMetdata function", () => {
+      expect(mockedGetMetadata).toHaveBeenCalledTimes(1);
+      const input = mockedGetMetadata.mock.calls[0][0];
+      console.log(input);
+      expect(input).toContain("http");
+      expect(input).toContain("id-123");
     });
 });
