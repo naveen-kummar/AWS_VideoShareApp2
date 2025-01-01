@@ -10,7 +10,3 @@ export class VideoMetadata{
     }
 }
 
-// width >= 1280 --> 1280x720 & 640x360
-// 1280 < width <= 640 --> 640x360
-// 640 < width --> width
-
