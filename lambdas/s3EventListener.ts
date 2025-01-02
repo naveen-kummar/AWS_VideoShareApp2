@@ -13,7 +13,9 @@ const videoDB = new VideoDB({
     tableName:  env.VIDEO_TABLE_NAME,
 });
 
-const videoMetadata = new VideoMetadata();
+const videoMetadata = new VideoMetadata({
+  mediaInfoCliPath : env.MEDIA_INFO_CLI_PATH,
+});
 const videoConverter = new VideoConverter();
 const uploadBucket = new S3({
   bucketName : "test",

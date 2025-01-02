@@ -7,5 +7,6 @@ export type PutHandler = {
 
 export type S3EventListener = {
     VIDEO_TABLE_NAME: string;
-    VIDEO_TABLE_REGION: string;    
+    VIDEO_TABLE_REGION: string;   
+    MEDIA_INFO_CLI_PATH: string; 
 };
