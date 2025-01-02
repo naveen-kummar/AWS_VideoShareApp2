@@ -59,14 +59,28 @@ export class VidShareAppStack extends cdk.Stack {
     const s3EventListenerEnv: LambdaEnvType.S3EventListener = {
       VIDEO_TABLE_NAME : table.tableName,
       VIDEO_TABLE_REGION : this.region,
-      MEDIA_INFO_CLI_PATH : "",
+      MEDIA_INFO_CLI_PATH : "./mediaInfo",
     };
     const s3EventListener = new lambdaFn.NodejsFunction(this, "s3EventListener", {
       entry: resolve(__dirname, "../../lambdas/s3EventListener.ts"),
       handler: "handler",
       bundling: {
+        commandHooks: {
+            //We need to copy mediainfo utillity after bundling done
+            afterBundling(inputDir, outputDir) {
+              return [
+                `cp '${inputDir}/mediaInfo/mediainfo' '${outputDir}'`,
+              ];
+            },
+
+            //For some reason type script need all 3 command hook function
+            beforeBundling(inputDir, outputDir) {return []},
+
+            //For some reason type script need all 3 command hook function
+            beforeInstall(inputDir, outputDir) {return []},
+        }, //commandHooks,
         nodeModules: [ 'uuid', 'zod', '@smithy/core' ,'@aws-sdk/core'], // Mark as external
-      }, 
+      }, //bundling
       environment: s3EventListenerEnv,
     });
 
