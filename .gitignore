@@ -414,3 +414,6 @@ dist/
 
 # Ignore source map files
 *.map
+
+# skip aws-cdk-init
+my-cdk-app/

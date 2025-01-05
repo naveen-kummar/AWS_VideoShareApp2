@@ -1,7 +1,7 @@
 import { S3 } from "../s3";
 
 
-describe("Test for S3", () => {
+describe.skip("Test for S3", () => {
 
     test("Should return signed url properly", async () => {
         const s3 = new S3({

@@ -9,25 +9,25 @@ import {S3} from '../lib/s3'
 const env = process.env as Env;
 
 const videoDB = new VideoDB({
-    region: env.VIDEO_TABLE_REGION,
-    tableName:  env.VIDEO_TABLE_NAME,
+    region: env.VIDEO_TABLE_REGION || "test-table",
+    tableName:  env.VIDEO_TABLE_NAME || "ap-south-1",
 });
 
 const videoMetadata = new VideoMetadata({
   mediaInfoCliPath : env.MEDIA_INFO_CLI_PATH,
 });
-const videoConverter = new VideoConverter();
+
 const uploadBucket = new S3({
-  bucketName : "test",
-  region : 'ap-south-1'
+  bucketName : env.UPLOAD_BUCKET_NAME || "test-bucket",
+  region : env.UPLOAD_BUCKET_REGION || "ap-south-1"
 });
 
 export const handler: S3Handler = async (e) => {
     const id = e.Records[0].s3.object.key;
     if (id) {
-        console.log("Inside handler of s3 and id is ", id);
+        //console.log("Inside handler of s3 and id is ", id);
       } else {
-        console.error("Key not found in the event");
+        //console.error("Key not found in the event");
       }
 
     //1. Update Dynamo DB table when video is uploaded to the s3 bucket for a specific id
@@ -46,29 +46,53 @@ export const handler: S3Handler = async (e) => {
     })
    );
 
+   console.log("Received metadata.widt as ", metadata.width);
+
+   const videoConverter = new VideoConverter();
+
    //3. Add resolution(s) to the uploaded video
    if(metadata.width >= 1280)
    {
-    videoConverter.addResolution({
+    //console.log("Calling addResolution func for 1280");
+    videoConverter.addResolution4(
+    {
       width: 1280,
       height: 720,
-     });
+    }
+    );
+
+   }
+   else
+   {
+    //console.log("Skipped Calling addResolution func for 1280");
    }
 
    if(metadata.width >= 640)
     {
-      videoConverter.addResolution({
+      //console.log("Calling addResolution func for 640");
+      videoConverter.addResolution4(
+      {
         width: 640,
         height: 360,
-       }); 
+       }
+      ); 
     }
     else
     {
-      videoConverter.addResolution({
+      //console.log("Calling addResolution func for as it is");
+      videoConverter.addResolution4(
+        {
         width: metadata.width,
         height: metadata.height,
-       }); 
+       }
+      ); 
     }
   
+    console.log("About to call videoConverter.convert_3 ");
+    await videoConverter.convert();
+    //await videoConverter.convert2.call(videoConverter);
+    console.log("Done call to videoConverter.convert ");
+
+    //console.log("Is addResolution2 defined?", typeof videoConverter.addResolution2 === "function");
 
 };

@@ -72,7 +72,7 @@ describe ("Tests for S3EventListener", () => {
 
    const mockUpdate = jest.spyOn(VideoDB.prototype, "update");
    const mockedGetMetadata = jest.spyOn(VideoMetadata.prototype, "frommUrl")
-   const mockedAddResolution = jest.spyOn(VideoConverter.prototype, "addResolution");
+   const mockedAddResolution = jest.spyOn(VideoConverter.prototype, "addResolution4");
 
    beforeEach(async() => {
       console.log("Inside beforeEach - About to call getEvent");
@@ -167,6 +167,6 @@ describe ("Tests for S3EventListener", () => {
       expect(mockedAddResolution).toHaveBeenCalledTimes(1);
       //1st Resolution
       expect(mockedAddResolution.mock.calls[0][0].width).toBe(426);
-      expect(mockedAddResolution.mock.calls[0][0].height).toBe(240);
+     expect(mockedAddResolution.mock.calls[0][0].height).toBe(240);
     });     
 });

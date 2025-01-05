@@ -1,4 +1,4 @@
-import child_process from 'child_process'
+import {exec} from "child_process"
 
 const samplePayload = {
     "creatingLibrary": {
@@ -114,15 +114,15 @@ interface Metadata{
 export class VideoMetadata{
 
     constructor(
-        private config: {
+       private config: {
             mediaInfoCliPath : string;
         }
     ) {}
 
     async frommUrl(url : string) : Promise<Metadata>{
         return new Promise((resolve, reject) => {
-            child_process.exec(
-                `${this.config.mediaInfoCliPath} --output=JSON ${url}`,
+            exec(
+                `${this.config.mediaInfoCliPath} --output=JSON '${url}'`,
                 (e, data) => {
                     if(e) return reject(e);
                     const payload = JSON.parse(data) as typeof samplePayload;

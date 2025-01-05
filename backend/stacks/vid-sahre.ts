@@ -59,6 +59,8 @@ export class VidShareAppStack extends cdk.Stack {
     const s3EventListenerEnv: LambdaEnvType.S3EventListener = {
       VIDEO_TABLE_NAME : table.tableName,
       VIDEO_TABLE_REGION : this.region,
+      UPLOAD_BUCKET_NAME : uploadBucket.bucketName,
+      UPLOAD_BUCKET_REGION : this.region,
       MEDIA_INFO_CLI_PATH : "./mediaInfo",
     };
     const s3EventListener = new lambdaFn.NodejsFunction(this, "s3EventListener", {
@@ -112,7 +114,7 @@ export class VidShareAppStack extends cdk.Stack {
     table.grantWriteData(putHandler);
     table.grantWriteData(s3EventListener);
     uploadBucket.grantPut(putHandler);
-
+    uploadBucket.grantRead(s3EventListener);
   
   }
 }

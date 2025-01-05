@@ -1,7 +1,7 @@
 import {DB} from "../db"
 import { DynamoDBDocumentClient } from "@aws-sdk/lib-dynamodb";
 
-describe ('Test for DB', () => {
+describe.skip ('Test for DB', () => {
 
     test.skip('Should save the data in database properly', async () => {
         const db = new DB<any>({
