@@ -15,6 +15,7 @@
 	"license": "ISC",
 	"dependencies": {
 		"@aws-sdk/client-dynamodb": "3.716.0",
+		"@aws-sdk/client-mediaconvert": "^3.726.1",
 		"@aws-sdk/client-s3": "^3.722.0",
 		"@aws-sdk/lib-dynamodb": "^3.721.0",
 		"@aws-sdk/s3-request-presigner": "^3.722.0",
@@ -24,6 +25,7 @@
 		"zod": "^3.24.1"
 	},
 	"devDependencies": {
+		"@smithy/core": "^3.1.0",
 		"@types/aws-lambda": "^8.10.147",
 		"@types/jest": "^29.5.14",
 		"@types/node": "^22.10.5",
@@ -34,7 +36,7 @@
 		"rimraf": "^6.0.1",
 		"ts-jest": "^29.2.5",
 		"ts-node": "^10.9.2",
-		"typescript": "^5.7.2"
+		"typescript": "^5.7.3"
 	},
 	"pnpm": {
 		"overrides": {

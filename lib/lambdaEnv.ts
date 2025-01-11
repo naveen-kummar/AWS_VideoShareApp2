@@ -11,4 +11,8 @@ export type S3EventListener = {
     MEDIA_INFO_CLI_PATH: string; 
     UPLOAD_BUCKET_NAME: string;
     UPLOAD_BUCKET_REGION: string;    
+    MEDIA_CONVERT_ROLE_ARN: string;
+    MEDIA_CONVERT_REGION: string;
+    MEDIA_CONVERT_ENDPOINT: string;
+    MEDIA_CONVERT_OUTPUT_BUCKET: string;
 };

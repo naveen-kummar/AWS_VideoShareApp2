@@ -48,7 +48,13 @@ export const handler: S3Handler = async (e) => {
 
    console.log("Received metadata.widt as ", metadata.width);
 
-   const videoConverter = new VideoConverter();
+   const videoConverter = new VideoConverter({
+    endpoint: env.MEDIA_CONVERT_ENDPOINT,
+    region: env.MEDIA_CONVERT_REGION,
+    roleArn: env.MEDIA_CONVERT_ROLE_ARN,
+    inputFile: `s3://${env.UPLOAD_BUCKET_NAME}/${id}`,
+    outputFile: `s3://${env.MEDIA_CONVERT_OUTPUT_BUCKET}/${id}`,
+   });
 
    //3. Add resolution(s) to the uploaded video
    if(metadata.width >= 1280)
@@ -58,6 +64,7 @@ export const handler: S3Handler = async (e) => {
     {
       width: 1280,
       height: 720,
+      bitRate: 500000
     }
     );
 
@@ -74,6 +81,7 @@ export const handler: S3Handler = async (e) => {
       {
         width: 640,
         height: 360,
+        bitRate: 100000
        }
       ); 
     }
@@ -84,6 +92,7 @@ export const handler: S3Handler = async (e) => {
         {
         width: metadata.width,
         height: metadata.height,
+        bitRate: 100000
        }
       ); 
     }

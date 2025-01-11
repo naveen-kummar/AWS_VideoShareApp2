@@ -82,6 +82,7 @@ describe ("Tests for S3EventListener", () => {
       width: 0,
       height: 0,
    });
+   jest.spyOn(VideoConverter.prototype, "convert").mockImplementation(async ()=> (undefined as any));
    })
    
    afterEach(() => {
