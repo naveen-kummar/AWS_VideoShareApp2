@@ -126,10 +126,14 @@ export class VideoMetadata{
                 (e, data) => {
                     if(e) return reject(e);
                     const payload = JSON.parse(data) as typeof samplePayload;
+                    console.log(payload);
+                    console.log(payload.media.track[0]);
+                    console.log("payload.media.track[1] is as folows - ");
+                    console.log(payload.media.track[1]);
                     resolve({
                         fileSize: parseInt(payload.media.track[0].FileSize!),
-                        height: parseInt(payload.media.track[0].Height!),
-                        width: parseInt(payload.media.track[0].Width!),
+                        height: parseInt(payload.media.track[1].Height!),
+                        width: parseInt(payload.media.track[1].Width!),
                     });//resolve
                 } //(e, data)
             )//child_process.exec

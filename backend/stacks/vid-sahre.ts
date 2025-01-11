@@ -61,17 +61,18 @@ export class VidShareAppStack extends cdk.Stack {
       VIDEO_TABLE_REGION : this.region,
       UPLOAD_BUCKET_NAME : uploadBucket.bucketName,
       UPLOAD_BUCKET_REGION : this.region,
-      MEDIA_INFO_CLI_PATH : "./mediaInfo",
+      MEDIA_INFO_CLI_PATH : "./mediainfo",
     };
     const s3EventListener = new lambdaFn.NodejsFunction(this, "s3EventListener", {
       entry: resolve(__dirname, "../../lambdas/s3EventListener.ts"),
       handler: "handler",
+      timeout: cdk.Duration.seconds(15),
       bundling: {
         commandHooks: {
             //We need to copy mediainfo utillity after bundling done
             afterBundling(inputDir, outputDir) {
               return [
-                `cp '${inputDir}/mediaInfo/mediainfo' '${outputDir}'`,
+                `cp '${inputDir}/mediainfo/mediainfo' '${outputDir}'`,
               ];
             },
 
