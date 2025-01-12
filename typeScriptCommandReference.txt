@@ -1,0 +1,66 @@
+pnpm add -D rimraf   
+-------------------------------------
+pnpm clean    
+
+del pnpm-lock.yaml 
+
+pnpm exec rmdir /s /q dist     
+
+pnpm exec rimraf node_modules 
+
+pnpm cache delete
+
+pnpm store prune 
+
+pnpm run clean     
+
+rimraf cdk.out node_modules    
+
+pnpm exec rm -rf dist   
+
+Remove-Item -Recurse -Force node_modules, pnpm-lock.yaml
+
+------------------------------
+pnpm update  
+
+pnpm install  
+
+pnpm add -D rimraf  
+
+pnpm add -g rimraf  
+
+pnpm add -D rimraf  
+
+pnpm add typescript@latest @smithy/core@latest -D  ---> Seems this cause problem
+
+pnpm install --force   
+
+-----------------------------
+pnpm add jest @types/jest ts-jest --save-dev 
+
+pnpm add @aws-sdk/client-mediaconvert  
+
+ cdk init app --language=typescript    
+cdk init app --language typescript  
+
+pnpm add -D @types/node   
+
+pnpm add -g aws-cdk    
+
+ pnpm list @types/jest   
+
+pnpm add -D @types/jest 
+
+pnpm add -D jest     
+
+pnpm jest        
+-------------------------------
+
+pnpm run build     
+
+pnpm exec tsc   
+
+pnpm build      
+
+pnpm tsc --build 
+pnpm tsc --build --force   
