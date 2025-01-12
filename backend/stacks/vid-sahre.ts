@@ -50,7 +50,7 @@ export class VidShareAppStack extends cdk.Stack {
       entry: resolve(__dirname, "../../lambdas/putHandler.ts"),
       handler: "handler",
       bundling: {
-        nodeModules: [ 'uuid', 'zod', '@smithy/core' ,'@aws-sdk/core'], // Mark as external
+        nodeModules: [ 'uuid', 'zod', '@aws-sdk/core'], // Mark as external '@smithy/core' ,
       }, 
       environment: putHandlerEnv,
     });
@@ -62,6 +62,10 @@ export class VidShareAppStack extends cdk.Stack {
       UPLOAD_BUCKET_NAME : uploadBucket.bucketName,
       UPLOAD_BUCKET_REGION : this.region,
       MEDIA_INFO_CLI_PATH : "./mediainfo",
+      MEDIA_CONVERT_ROLE_ARN : "",
+      MEDIA_CONVERT_REGION : this.region,
+      MEDIA_CONVERT_ENDPOINT : "",
+      MEDIA_CONVERT_OUTPUT_BUCKET : ""
     };
     const s3EventListener = new lambdaFn.NodejsFunction(this, "s3EventListener", {
       entry: resolve(__dirname, "../../lambdas/s3EventListener.ts"),
@@ -82,7 +86,7 @@ export class VidShareAppStack extends cdk.Stack {
             //For some reason type script need all 3 command hook function
             beforeInstall(inputDir, outputDir) {return []},
         }, //commandHooks,
-        nodeModules: [ 'uuid', 'zod', '@smithy/core' ,'@aws-sdk/core'], // Mark as external
+        nodeModules: [ 'uuid', 'zod', '@aws-sdk/core'], // Mark as external '@smithy/core' ,
       }, //bundling
       environment: s3EventListenerEnv,
     });
