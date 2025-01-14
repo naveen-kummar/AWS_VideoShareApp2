@@ -4,6 +4,7 @@ import * as s3 from 'aws-cdk-lib/aws-s3'
 import * as s3Notification from 'aws-cdk-lib/aws-s3-notifications'
 import * as apigateway from "aws-cdk-lib/aws-apigateway";
 import * as dynamodb from "aws-cdk-lib/aws-dynamodb";
+import * as iam from "aws-cdk-lib/aws-iam";
 import { Construct } from 'constructs';
 import {resolve} from 'path'
 import * as LambdaEnvType from "../../lib/lambdaEnv"
@@ -39,6 +40,12 @@ export class VidShareAppStack extends cdk.Stack {
       removalPolicy: cdk.RemovalPolicy.DESTROY //Need to explicity mention that this s3 bucket need to be destroyed during "CDK Destroy"
     });
 
+    // Stream Bucket (S3)
+    const streamBucket = new s3.Bucket(this, "streamBucket", {
+      removalPolicy: cdk.RemovalPolicy.DESTROY //Need to explicity mention that this s3 bucket need to be destroyed during "CDK Destroy"
+    });
+
+
     //4.  Put Handler
     const putHandlerEnv : LambdaEnvType.PutHandler = {
         VIDEO_TABLE_NAME : table.tableName,
@@ -50,9 +57,14 @@ export class VidShareAppStack extends cdk.Stack {
       entry: resolve(__dirname, "../../lambdas/putHandler.ts"),
       handler: "handler",
       bundling: {
-        nodeModules: [ 'uuid', 'zod', '@aws-sdk/core'], // Mark as external '@smithy/core' ,
+        nodeModules: [ 'uuid', 'zod', '@smithy/core' ,'@aws-sdk/core'], // Mark as external '@smithy/core' ,
       }, 
       environment: putHandlerEnv,
+    });
+
+    //4b. Create MediaConvert Role to read from upload bucket and write to stream bucket
+    const mediaConvertRole = new iam.Role(this, 'MediaConvertRole', {
+      assumedBy: new iam.ServicePrincipal('mediaconvert.amazonaws.com'),
     });
 
     //5. S3EventListener Handler
@@ -62,10 +74,10 @@ export class VidShareAppStack extends cdk.Stack {
       UPLOAD_BUCKET_NAME : uploadBucket.bucketName,
       UPLOAD_BUCKET_REGION : this.region,
       MEDIA_INFO_CLI_PATH : "./mediainfo",
-      MEDIA_CONVERT_ROLE_ARN : "",
-      MEDIA_CONVERT_REGION : this.region,
-      MEDIA_CONVERT_ENDPOINT : "",
-      MEDIA_CONVERT_OUTPUT_BUCKET : ""
+      MEDIA_CONVERT_ENDPOINT : "https://xnbzilj6c.mediaconvert.ap-south-1.amazonaws.com",   
+      MEDIA_CONVERT_OUTPUT_BUCKET : streamBucket.bucketName,
+      MEDIA_CONVERT_REGION : this.region,         
+      MEDIA_CONVERT_ROLE_ARN : mediaConvertRole.roleArn
     };
     const s3EventListener = new lambdaFn.NodejsFunction(this, "s3EventListener", {
       entry: resolve(__dirname, "../../lambdas/s3EventListener.ts"),
@@ -86,7 +98,7 @@ export class VidShareAppStack extends cdk.Stack {
             //For some reason type script need all 3 command hook function
             beforeInstall(inputDir, outputDir) {return []},
         }, //commandHooks,
-        nodeModules: [ 'uuid', 'zod', '@aws-sdk/core'], // Mark as external '@smithy/core' ,
+        nodeModules: [ 'uuid', 'zod', '@smithy/core', '@aws-sdk/core'], // Mark as external '@smithy/core' ,
       }, //bundling
       environment: s3EventListenerEnv,
     });
@@ -120,6 +132,7 @@ export class VidShareAppStack extends cdk.Stack {
     table.grantWriteData(s3EventListener);
     uploadBucket.grantPut(putHandler);
     uploadBucket.grantRead(s3EventListener);
-  
+    uploadBucket.grantRead(mediaConvertRole);
+    streamBucket.grantWrite(mediaConvertRole);  
   }
 }
