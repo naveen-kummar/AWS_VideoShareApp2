@@ -134,5 +134,19 @@ export class VidShareAppStack extends cdk.Stack {
     uploadBucket.grantRead(s3EventListener);
     uploadBucket.grantRead(mediaConvertRole);
     streamBucket.grantWrite(mediaConvertRole);  
+
+    /*Now we need enhance the Role Policy of s3Evenlisterer lambda to 
+    transfer the ARN of our mediaConvertRole to the MediaConvertClient during the
+    video convert operation*/
+    s3EventListener.role?.attachInlinePolicy(
+      new iam.Policy(this, "S3EventListenerPolicy#passRole", {
+        statements: [
+          new iam.PolicyStatement({
+              actions: ["iam:PassRole", "mediaconvert:CreateJob"],
+              resources: ["*"],
+          }),
+        ],
+      })
+    );
   }
 }
