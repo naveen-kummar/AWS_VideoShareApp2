@@ -9,6 +9,11 @@ export const docSchema = z.object({
     uploadTime: z.number(),
     tags: z.array(z.string()).optional(),
     status: z.enum(["NOT_UPLOADED", "UPLOADED", "PROCESSING", "READY"]),
+    files : z.object({
+        "720p" : z.string().optional(),
+        "360p" : z.string().optional(),
+        "240p" : z.string().optional(),
+    }).optional(),
 });
 
 export const createDoc = (props: z.infer<typeof docSchema>) => {
