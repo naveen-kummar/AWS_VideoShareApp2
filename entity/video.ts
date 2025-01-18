@@ -22,4 +22,13 @@ return props;
 
 type DocSchemaType = z.infer<typeof docSchema> & { id: string };
 
-export class VideoDB extends DB<DocSchemaType> {};
+type PartialAttrs = Partial<Omit<z.infer<typeof docSchema>, "id">>
+export class VideoDB extends DB<z.infer<typeof docSchema>> {
+    changes: PartialAttrs = {}
+    collectChanges(attrs : PartialAttrs){
+        this.changes = {
+            ...this.changes,
+            ...attrs
+        }
+    }
+};

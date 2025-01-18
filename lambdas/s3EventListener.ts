@@ -31,11 +31,8 @@ export const handler: S3Handler = async (e) => {
       }
 
     //1. Update Dynamo DB table when video is uploaded to the s3 bucket for a specific id
-    await videoDB.update({
-        id,
-        attrs: {
-            status: "UPLOADED"
-        },
+     videoDB.collectChanges({
+        status : "UPLOADED"
     });
 
     //2. Get downloaded url for the uploaded video
@@ -97,6 +94,10 @@ export const handler: S3Handler = async (e) => {
       ); 
     }
   
+    await videoDB.update({
+      id,
+      attrs: videoDB.changes,
+    });
     console.log("About to call videoConverter.convert_3 ");
     await videoConverter.convert();
     //await videoConverter.convert2.call(videoConverter);
