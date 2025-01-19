@@ -2,6 +2,8 @@ pnpm add -D rimraf
 -------------------------------------
 pnpm clean    
 
+pnpm exec rimraf node_modules
+
 del pnpm-lock.yaml 
 
 pnpm exec rmdir /s /q dist     
@@ -16,20 +18,20 @@ pnpm run clean
 
 rimraf cdk.out node_modules    
 
-pnpm exec rm -rf dist   
+//pnpm exec rm -rf dist   
 
-Remove-Item -Recurse -Force node_modules, pnpm-lock.yaml
+//Remove-Item -Recurse -Force node_modules, pnpm-lock.yaml
 
 ------------------------------
 pnpm update  
 
 pnpm install  
 
-pnpm add -D rimraf  
+//pnpm add -D rimraf  
 
 pnpm add -g rimraf  
 
-pnpm add -D rimraf  
+//pnpm add -D rimraf  
 
 pnpm add typescript@latest @smithy/core@latest -D  ---> Seems this cause problem
 
@@ -40,7 +42,7 @@ pnpm add jest @types/jest ts-jest --save-dev
 
 pnpm add @aws-sdk/client-mediaconvert  
 
- cdk init app --language=typescript    
+// cdk init app --language=typescript    
 cdk init app --language typescript  
 
 pnpm add -D @types/node   
@@ -53,7 +55,7 @@ pnpm add -D @types/jest
 
 pnpm add -D jest     
 
-pnpm jest        
+//pnpm jest        - This Hangs the VS Code
 -------------------------------
 
 pnpm run build     

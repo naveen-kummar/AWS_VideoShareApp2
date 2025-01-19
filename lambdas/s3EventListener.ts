@@ -8,11 +8,6 @@ import {S3} from '../lib/s3'
 
 const env = process.env as Env;
 
-const videoDB = new VideoDB({
-    region: env.VIDEO_TABLE_REGION || "test-table",
-    tableName:  env.VIDEO_TABLE_NAME || "ap-south-1",
-});
-
 const videoMetadata = new VideoMetadata({
   mediaInfoCliPath : env.MEDIA_INFO_CLI_PATH,
 });
@@ -23,6 +18,12 @@ const uploadBucket = new S3({
 });
 
 export const handler: S3Handler = async (e) => {
+
+  const videoDB = new VideoDB({
+    region: env.VIDEO_TABLE_REGION || "test-table",
+    tableName:  env.VIDEO_TABLE_NAME || "ap-south-1",
+  });
+
     const id = e.Records[0].s3.object.key;
     if (id) {
         //console.log("Inside handler of s3 and id is ", id);
@@ -61,9 +62,17 @@ export const handler: S3Handler = async (e) => {
     {
       width: 1280,
       height: 720,
-      bitRate: 500000
+      bitRate: 500000,
+      nameExtension: "_720p",
     }
     );
+
+    console.log("Calling collectChanges_2 for _720 for vide width of ", metadata.width);
+
+    videoDB.addFiles(
+      {
+        "720p": `https://${env.MEDIA_CONVERT_OUTPUT_BUCKET}.s3.amazonaws.com/${id}_720p.mp4`
+      });
 
    }
    else
@@ -78,9 +87,15 @@ export const handler: S3Handler = async (e) => {
       {
         width: 640,
         height: 360,
-        bitRate: 100000
+        bitRate: 100000,
+        nameExtension: "_360p",
        }
       ); 
+
+      videoDB.addFiles(
+        {
+          "360p": `https://${env.MEDIA_CONVERT_OUTPUT_BUCKET}.s3.amazonaws.com/${id}_360p.mp4`
+        });
     }
     else
     {
@@ -89,9 +104,14 @@ export const handler: S3Handler = async (e) => {
         {
         width: metadata.width,
         height: metadata.height,
-        bitRate: 100000
-       }
-      ); 
+        bitRate: 100000,
+        nameExtension: "_240p",
+       }); 
+
+       videoDB.addFiles(
+        {
+          "240p": `https://${env.MEDIA_CONVERT_OUTPUT_BUCKET}.s3.amazonaws.com/${id}_240p.mp4`
+        });
     }
   
     await videoDB.update({

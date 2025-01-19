@@ -417,6 +417,7 @@ dist/
 
 # skip aws-cdk-init
 my-cdk-app/
+my-cdk-app1/
 
 # skip pnpm-lock.yaml
 pnpm-lock.yaml

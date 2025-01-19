@@ -38,7 +38,7 @@ export class DB<T extends { id: string }>{
     }
 
     /*This function signature is made generic so that we can change 
-    implementation to MongoDB instead of DynamoDB*/
+    implementation to MongoDB instead of DynamoDB in future if required*/
     async update({id, attrs} : {id : string, attrs : Partial<Omit<T, 'id'>>}){
         console.log("Inside VideoDB update");
         const UpdateExpressionArr: string[] = []; //set #title = :title, #description = :description

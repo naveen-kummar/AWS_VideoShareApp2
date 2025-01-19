@@ -9,6 +9,12 @@ TODO:
    // 1280 < width <= 640 --> 640x360
    // 640 < width --> width
 */
+
+const prevEnv = process.env
+process.env = {
+   ...prevEnv,
+   MEDIA_CONVERT_OUTPUT_BUCKET : "output-bucket"
+}
 //import {DB} from "../../lib/db";
 import { VideoDB } from '../../entity/video'
 import { VideoMetadata } from '../../lib/video-metadata'
@@ -88,7 +94,11 @@ describe ("Tests for S3EventListener", () => {
    afterEach(() => {
       console.log("Inside afterEach - resetAllMocks");
     jest.resetAllMocks()
-   })
+   });
+
+   afterAll(() => {
+      process.env = prevEnv
+   });
 
     //TestCase - 1
     test("It should call the update method withthe correct metadata", async() => {
@@ -131,6 +141,16 @@ describe ("Tests for S3EventListener", () => {
       //2nd Resolution
       expect(mockedAddResolution.mock.calls[1][0].width).toBe(640);
       expect(mockedAddResolution.mock.calls[1][0].height).toBe(360);
+
+      //Check file name received correctly for Resolution 1
+      const files = mockUpdate.mock.calls[0][0].attrs.files;
+      expect(files?.["720p"]).toBe("https://output-bucket.s3.amazonaws.com/id-123_720p.mp4");
+
+      //Check file name received correctly for Resolution 2
+      expect(files?.["360p"]).toBe("https://output-bucket.s3.amazonaws.com/id-123_360p.mp4");
+
+      //There should be no file for 240p
+      expect(files?.["240p"]).toBeFalsy();
     });
 
     //Testcase - 4 - "// width == 854 --> Then only one res 854x480 should be called
@@ -150,6 +170,16 @@ describe ("Tests for S3EventListener", () => {
       //1st Resolution
       expect(mockedAddResolution.mock.calls[0][0].width).toBe(640);
       expect(mockedAddResolution.mock.calls[0][0].height).toBe(360);
+      
+      const files = mockUpdate.mock.calls[0][0].attrs.files;
+      //There should be no file for 720p
+      expect(files?.["720p"]).toBeFalsy();
+
+      //Check file name received correctly for Resolution 2
+      expect(files?.["360p"]).toBe("https://output-bucket.s3.amazonaws.com/id-123_360p.mp4");
+
+      //There should be no file for 240p
+      expect(files?.["240p"]).toBeFalsy();
     });    
 
     //Testcase - 5 - "// width < 640 --> Then only one res call with orginal width & Height need to be called
@@ -169,5 +199,15 @@ describe ("Tests for S3EventListener", () => {
       //1st Resolution
       expect(mockedAddResolution.mock.calls[0][0].width).toBe(426);
      expect(mockedAddResolution.mock.calls[0][0].height).toBe(240);
+
+     const files = mockUpdate.mock.calls[0][0].attrs.files;
+     //There should be no file for 720p
+     expect(files?.["720p"]).toBeFalsy();
+
+     //There should be no file for 360p
+     expect(files?.["360p"]).toBeFalsy();
+
+     //There should be file for 240p
+     expect(files?.["240p"]).toBe("https://output-bucket.s3.amazonaws.com/id-123_240p.mp4");
     });     
 });

@@ -98,7 +98,7 @@ export class VidShareAppStack extends cdk.Stack {
             //For some reason type script need all 3 command hook function
             beforeInstall(inputDir, outputDir) {return []},
         }, //commandHooks,
-        nodeModules: [ 'uuid', 'zod', '@smithy/core', '@aws-sdk/core'], // Mark as external '@smithy/core' ,
+        nodeModules: [ 'uuid', 'zod',  '@smithy/core' ,'@aws-sdk/core'], // Mark as external '@smithy/core' ,
       }, //bundling
       environment: s3EventListenerEnv,
     });
