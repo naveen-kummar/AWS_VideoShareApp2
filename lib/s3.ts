@@ -1,4 +1,4 @@
-import { S3Client, PutObjectCommand, GetObjectCommand } from "@aws-sdk/client-s3";
+import { S3Client, PutObjectCommand, GetObjectCommand, DeleteObjectCommand } from "@aws-sdk/client-s3";
 import { getSignedUrl } from "@aws-sdk/s3-request-presigner";
 
 
@@ -43,5 +43,14 @@ export class S3{
             Bucket : this.config.bucketName,
             Key : key,
         }), {expiresIn})
-    }    
+    } 
+    
+    deleteObject(key : string) {
+        return this.client.send(
+            new DeleteObjectCommand({
+                Bucket : this.config.bucketName,
+                Key : key,
+            })
+        )
+    }
 }

@@ -14,6 +14,7 @@ interface VideoConvertorConfig {
     endpoint: string;
     inputFile: string; //"s3://vidshareappstack-uploadbucketd2c1da78-q2fuxiqczr6z/0306bcb4-dee9-4ef6-9ac4-8c29dbf715a3"
     outputFile: string; //"s3://vidshare-upload-bucket-naveen/"
+    userMetadata: Record<string, string>;
 }
 
 export class VideoConverter {
@@ -41,7 +42,7 @@ export class VideoConverter {
 
         return this.client.send(
             new CreateJobCommand({
-                UserMetadata: {},
+                UserMetadata: this.config.userMetadata,
                 Role: this.config.roleArn,
                 Settings: {
                     TimecodeConfig: {

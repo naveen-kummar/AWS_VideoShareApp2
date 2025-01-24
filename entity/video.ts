@@ -8,7 +8,7 @@ export const docSchema = z.object({
     description: z.string().optional(),
     uploadTime: z.number(),
     tags: z.array(z.string()).optional(),
-    status: z.enum(["NOT_UPLOADED", "UPLOADED", "PROCESSING", "READY"]),
+    status: z.enum(["NOT_UPLOADED", "UPLOADED", "PROCESSING", "READY", "ERROR"]),
     files : z.object({
         "720p" : z.string().optional(),
         "360p" : z.string().optional(),

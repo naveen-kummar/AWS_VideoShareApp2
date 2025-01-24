@@ -58,7 +58,7 @@ pnpm add -D jest
 //pnpm jest        - This Hangs the VS Code
 -------------------------------
 
-pnpm run build     
+pnpm run build     --> This scan through tsconfig.json and reports error if any
 
 pnpm exec tsc   
 
@@ -66,3 +66,6 @@ pnpm build
 
 pnpm tsc --build 
 pnpm tsc --build --force   
+
+///////////////////////////////////////////////////////////
+> Just build individual files (and ignore error related @smithy) and run directlty on ts file.

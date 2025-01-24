@@ -52,6 +52,7 @@ export const handler: S3Handler = async (e) => {
     roleArn: env.MEDIA_CONVERT_ROLE_ARN,
     inputFile: `s3://${env.UPLOAD_BUCKET_NAME}/${id}`,
     outputFile: `s3://${env.MEDIA_CONVERT_OUTPUT_BUCKET}/${id}`,
+    userMetadata: {id,}
    });
 
    //3. Add resolution(s) to the uploaded video
