@@ -16,3 +16,10 @@ export type S3EventListener = {
     MEDIA_CONVERT_ENDPOINT: string;
     MEDIA_CONVERT_OUTPUT_BUCKET: string;
 };
+
+export type MediaConvertEventHandler = {
+    VIDEO_TABLE_NAME: string;
+    VIDEO_TABLE_REGION: string;
+    UPLOAD_BUCKET_NAME: string;
+    UPLOAD_BUCKET_REGION: string;
+};

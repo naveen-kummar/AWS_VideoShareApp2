@@ -67,6 +67,20 @@ export class VidShareAppStack extends cdk.Stack {
       assumedBy: new iam.ServicePrincipal('mediaconvert.amazonaws.com'),
     });
 
+    //4c. MediaConvertEventHandler
+    const mediaConvertEventHandlerEnv: LambdaEnvType.MediaConvertEventHandler = {
+      UPLOAD_BUCKET_NAME : uploadBucket.bucketName,
+      UPLOAD_BUCKET_REGION : this.region,
+      VIDEO_TABLE_NAME : table.tableName,
+      VIDEO_TABLE_REGION : this.region
+    }
+    const mediaConvertEventHandler = new  lambdaFn.NodejsFunction(this, "MediaConvertEventHandler",
+      {
+        entry : resolve (__dirname, "../../lambdas/mediaConvertEventHandler.ts"),
+        environment : mediaConvertEventHandlerEnv
+      }
+    )
+
     //5. S3EventListener Handler
     const s3EventListenerEnv: LambdaEnvType.S3EventListener = {
       VIDEO_TABLE_NAME : table.tableName,
@@ -130,8 +144,10 @@ export class VidShareAppStack extends cdk.Stack {
     //Provide access to putHandler to update dynamodb table and put data in to s3
     table.grantWriteData(putHandler);
     table.grantWriteData(s3EventListener);
+    table.grantWriteData(mediaConvertEventHandler);
     uploadBucket.grantPut(putHandler);
     uploadBucket.grantRead(s3EventListener);
+    uploadBucket.grantDelete(mediaConvertEventHandler);
     uploadBucket.grantRead(mediaConvertRole);
     streamBucket.grantWrite(mediaConvertRole);  
 

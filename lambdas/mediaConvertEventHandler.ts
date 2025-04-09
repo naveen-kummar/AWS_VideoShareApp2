@@ -3,15 +3,18 @@
   import { EventBridgeHandler } from "aws-lambda";
   import { VideoDB } from "../entity/video";
   import { S3 } from "../lib/s3"
+  import { MediaConvertEventHandler as Env} from "../lib/lambdaEnv"
+
+  const env = process.env as Env
 
   const videoDb = new VideoDB({
-    region : "ap-south-1",
-    tableName : "test-table"
+    region : env.VIDEO_TABLE_REGION || "ap-south-1",
+    tableName : env.VIDEO_TABLE_NAME || "test-table"
   });
 
   const uploadBucket = new S3({
-    bucketName : "test-bucket",
-    region : "ap-south-1"
+    bucketName : env.UPLOAD_BUCKET_NAME || "test-bucket",
+    region : env.UPLOAD_BUCKET_REGION || "ap-south-1"
   })
 
   export const handler: EventBridgeHandler<
