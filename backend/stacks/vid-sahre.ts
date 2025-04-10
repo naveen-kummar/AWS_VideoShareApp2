@@ -47,6 +47,7 @@ export class VidShareAppStack extends cdk.Stack {
       removalPolicy: cdk.RemovalPolicy.DESTROY //Need to explicity mention that this s3 bucket need to be destroyed during "CDK Destroy"
     });
 
+    streamBucket.grantPublicAccess()
 
     //4.  Put Handler
     const putHandlerEnv : LambdaEnvType.PutHandler = {

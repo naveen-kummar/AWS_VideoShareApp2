@@ -43,7 +43,7 @@
                     status: "READY"
                 },
             });
-        uploadBucket.deleteObject(id);
+        await uploadBucket.deleteObject(id);
         break;
         case "PROGRESSING":
             await videoDb.update({
@@ -60,7 +60,7 @@
                     status: "ERROR"
                 },
             }); 
-            uploadBucket.deleteObject(id);                   
+            await uploadBucket.deleteObject(id);                   
     }
     } catch (error) {
         console.log(error);
