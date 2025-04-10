@@ -8,6 +8,8 @@ import * as iam from "aws-cdk-lib/aws-iam";
 import { Construct } from 'constructs';
 import {resolve} from 'path'
 import * as LambdaEnvType from "../../lib/lambdaEnv"
+import * as event from 'aws-cdk-lib/aws-events'
+import * as eventTarget from 'aws-cdk-lib/aws-events-targets'
 
 
 
@@ -58,6 +60,7 @@ export class VidShareAppStack extends cdk.Stack {
       handler: "handler",
       bundling: {
         nodeModules: [ 'uuid', 'zod', '@smithy/core' ,'@aws-sdk/core'], // Mark as external '@smithy/core' ,
+        externalModules: ['@aws-sdk/nested-clients/sts', '@aws-sdk/nested-clients/sso-oidc'],
       }, 
       environment: putHandlerEnv,
     });
@@ -77,6 +80,10 @@ export class VidShareAppStack extends cdk.Stack {
     const mediaConvertEventHandler = new  lambdaFn.NodejsFunction(this, "MediaConvertEventHandler",
       {
         entry : resolve (__dirname, "../../lambdas/mediaConvertEventHandler.ts"),
+        bundling: {
+          nodeModules: [ 'uuid', 'zod', '@smithy/core' ,'@aws-sdk/core'], // Mark as external '@smithy/core' ,
+          externalModules: ['@aws-sdk/nested-clients/sts', '@aws-sdk/nested-clients/sso-oidc'],
+        },         
         environment : mediaConvertEventHandlerEnv
       }
     )
@@ -113,12 +120,28 @@ export class VidShareAppStack extends cdk.Stack {
             beforeInstall(inputDir, outputDir) {return []},
         }, //commandHooks,
         nodeModules: [ 'uuid', 'zod',  '@smithy/core' ,'@aws-sdk/core'], // Mark as external '@smithy/core' ,
+        externalModules: ['@aws-sdk/nested-clients/sts', '@aws-sdk/nested-clients/sso-oidc'],
       }, //bundling
       environment: s3EventListenerEnv,
     });
 
     //5.1 Send s3 event notification to our lambda
     uploadBucket.addObjectCreatedNotification(new s3Notification.LambdaDestination(s3EventListener));
+
+    //5.2 MediaConvertJobStateChangeRule
+    new event.Rule(this, "MediaConvertJobStateChangeRule", {
+      eventPattern : {
+          "source": ["aws.mediaconvert"],
+          "detailType": ["MediaConvert Job State Change"],
+          "detail": {
+            "status": ["ERROR", "COMPLETE", "PROGRESSING"]
+          }
+      },
+      targets : [
+        new eventTarget.LambdaFunction(mediaConvertEventHandler)
+      ]
+    })
+
 
     //1. API Gateway
     const mainApi = new apigateway.RestApi(this, 'VidShareMainApi', {

@@ -27,9 +27,13 @@
     }, 
     any
 > = async (e) => {
+    try {
+        
 
     const id = e.detail.userMetadata.id
-    const status = e.detail.status
+
+    if(!id) throw new Error("No video id provided in the metadata")
+    const status = e.detail.status;
 
     switch (status) {
         case "COMPLETE":
@@ -57,5 +61,8 @@
                 },
             }); 
             uploadBucket.deleteObject(id);                   
+    }
+    } catch (error) {
+        console.log(error);
     }
 };
