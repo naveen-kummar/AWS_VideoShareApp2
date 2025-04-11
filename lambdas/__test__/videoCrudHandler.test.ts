@@ -12,33 +12,33 @@
  * Send that url to the client
  */
 
-import { handler } from "../putHandler";
+import { handler } from "../videoCrudHandler";
 import {DB} from "../../lib/db";
 import { S3 } from "../../lib/s3";
 
-describe.skip("Test for the Video Put Handler", () => {
+const spySave = jest.spyOn(DB.prototype, "save");
+const spyGetUploadUrl = jest.spyOn(S3.prototype, 'getUploadUrl')
 
-    beforeEach(() =>{
-        jest.spyOn(DB.prototype, "save").mockImplementation((() => {}) as any)
-        jest.spyOn(S3.prototype, "getUploadUrl").mockImplementation((() => "url") as any)
-    })
+function runBeforeEach(){
+    jest.resetAllMocks()
+    spySave.mockImplementation((() => {}) as any)
+    spyGetUploadUrl.mockImplementation((() => "url") as any)    
+}
 
-    afterEach(() => {
-        //restore the spy created with SpyOn
-        jest.resetAllMocks();
-    });
-    test.only('Should return a 400 statuscode if empty object is passed', async () => {
+//1. PUT Method
+describe("Test for the Video PUT method", () => {
+
+    beforeEach(runBeforeEach)
+
+    test('Should return a 400 statuscode if empty object is passed', async () => {
         const res = await (handler as any)({body : JSON.stringify({}) });
         console.log(res);
         expect(res.statusCode).toBe(400);
     });
 
     test('Should call db Save function if proper body is passed', async () => {
-        const spySave = jest.spyOn(DB.prototype, "save");
 
-        spySave.mockImplementation( (async () => {}) as any );
-
-        const res = await (handler as any)({
+        await (handler as any)({
             body: JSON.stringify({
                 userId: "user-123",
                 title: "Cat-video",
@@ -50,11 +50,8 @@ describe.skip("Test for the Video Put Handler", () => {
     });
 
     test('Should call the save method', async () => {
-        const spySave = jest.spyOn(DB.prototype, "save");
 
-        spySave.mockImplementation((async () => {}) as any);
-
-        const res = await (handler as any)({
+     await (handler as any)({
             body: JSON.stringify({
                 userId: "user-123",
                 title: "Cat-video",
@@ -66,7 +63,7 @@ describe.skip("Test for the Video Put Handler", () => {
     });
 
     test('should call the function to generate pre-signed url and send that in the body', async () => {
-        const spyGetUploadUrl = jest.spyOn(S3.prototype, 'getUploadUrl')
+
         spyGetUploadUrl.mockImplementation(async () => "http://upload-url")
 
         const res = await (handler as any)({
@@ -82,3 +79,20 @@ describe.skip("Test for the Video Put Handler", () => {
 
     });
 });
+
+/**
+ * TODO for GET Handler
+ * 
+ * /Video?id=video123
+ * send the video with that id
+ * 
+ * /Video?userId=user-1
+ * send the list of videos for that user
+ * 
+ * If no queries passed will return an error
+ */
+
+//2. GET Method
+describe('Test for GET Method', () => {
+
+})
