@@ -5,6 +5,7 @@ import {z} from 'zod';
 import { VideoDB} from '../entity/video';
 import { withBodyValidation } from '../lib/handlers/api';
 import {PutHandler as Env} from "../lib/lambdaEnv"
+import { APIGatewayProxyHandler } from "aws-lambda";
 
 const env = process.env as Env
 
@@ -18,35 +19,43 @@ const s3 = new S3({
 });
 
 
-export const handler = withBodyValidation({
-schema :  z.object({
-    userId : z.string(),
-    title : z.string(),
-    description : z.string().optional(),
-    tags : z.array(z.string()).optional()
-}),
-async handler({title, userId, description, tags}){
+export const handler: APIGatewayProxyHandler = (...params) => {
 
-    console.log("NaveenAwsLog - Inside putHandlerts - handler func");
+    switch(params[0].httpMethod){
+    
+    case "PUT":
+        return withBodyValidation({
+            schema :  z.object({
+                userId : z.string(),
+                title : z.string(),
+                description : z.string().optional(),
+                tags : z.array(z.string()).optional()
+            }),
+            async handler({title, userId, description, tags}){
+            
+                console.log("NaveenAwsLog - Inside putHandlerts - handler func");
+            
+                const id = v4();
+            
+                await videoDB.save({
+                    id ,
+                    status: 'NOT_UPLOADED',
+                    title,
+                    userId,
+                    uploadTime: Date.now(),
+                    description,
+                    tags,
+                });
+            
+                return {
+                    uploadUrl : await s3.getUploadUrl({
+                        key : id,
+                        expiresIn : 60 * 10
+                    })
+                }
+            }
+            })(...params);
 
-    const id = v4();
-
-    await videoDB.save({
-        id ,
-        status: 'NOT_UPLOADED',
-        title,
-        userId,
-        uploadTime: Date.now(),
-        description,
-        tags,
-    });
-
-    return {
-        uploadUrl : await s3.getUploadUrl({
-            key : id,
-            expiresIn : 60 * 10
-        })
     }
+           
 }
-})
-

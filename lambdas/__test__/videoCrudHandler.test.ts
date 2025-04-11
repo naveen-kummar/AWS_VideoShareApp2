@@ -25,25 +25,41 @@ function runBeforeEach(){
     spyGetUploadUrl.mockImplementation((() => "url") as any)    
 }
 
+function callHandler({httpMethod, body} : {
+httpMethod : "GET" | "POST" | "PUT" | "DELETE",
+body: any
+}){
+    return (handler as any)({
+        body: JSON.stringify(body),
+        httpMethod
+    });
+}
+
+
+
 //1. PUT Method
 describe("Test for the Video PUT method", () => {
 
     beforeEach(runBeforeEach)
 
     test('Should return a 400 statuscode if empty object is passed', async () => {
-        const res = await (handler as any)({body : JSON.stringify({}) });
+        const res = await callHandler({
+            httpMethod: "PUT",
+            body: {}
+        })
         console.log(res);
         expect(res.statusCode).toBe(400);
     });
 
     test('Should call db Save function if proper body is passed', async () => {
 
-        await (handler as any)({
-            body: JSON.stringify({
+        await callHandler({
+            httpMethod: "PUT",
+            body : {
                 userId: "user-123",
                 title: "Cat-video",
-            }),
-        });
+            }
+        })
 
         expect(spySave).toBeCalled();
 
@@ -51,13 +67,13 @@ describe("Test for the Video PUT method", () => {
 
     test('Should call the save method', async () => {
 
-     await (handler as any)({
-            body: JSON.stringify({
-                userId: "user-123",
-                title: "Cat-video",
-            }),
-        });
-
+     await callHandler({
+        httpMethod: "PUT",
+        body : {
+            userId: "user-123",
+            title: "Cat-video",
+        }
+    })
         expect(spySave).toBeCalled();
 
     });
@@ -66,12 +82,13 @@ describe("Test for the Video PUT method", () => {
 
         spyGetUploadUrl.mockImplementation(async () => "http://upload-url")
 
-        const res = await (handler as any)({
-            body: JSON.stringify({
+        const res = await callHandler({
+            httpMethod: "PUT",
+            body : {
                 userId: "user-123",
                 title: "Cat-video",
-            }),
-        });
+            }
+        })
 
         expect(spyGetUploadUrl).toBeCalledTimes(1)
 
