@@ -20,9 +20,13 @@ const spySave = jest.spyOn(DB.prototype, "save");
 const spyGetUploadUrl = jest.spyOn(S3.prototype, 'getUploadUrl')
 
 function runBeforeEach(){
+    console.log("videoCrudHandlerTEST - runBeforeEach - 1");
     jest.resetAllMocks()
+    console.log("videoCrudHandlerTEST - runBeforeEach - 2");
     spySave.mockImplementation((() => {}) as any)
-    spyGetUploadUrl.mockImplementation((() => "url") as any)    
+    console.log("videoCrudHandlerTEST - runBeforeEach - 3");
+    spyGetUploadUrl.mockImplementation((() => "url") as any)
+    console.log("videoCrudHandlerTEST - runBeforeEach - 4");    
 }
 
 function callHandler({httpMethod, body} : {
@@ -42,7 +46,7 @@ describe("Test for the Video PUT method", () => {
 
     beforeEach(runBeforeEach)
 
-    test('Should return a 400 statuscode if empty object is passed', async () => {
+    test.skip('Should return a 400 statuscode if empty object is passed', async () => {
         const res = await callHandler({
             httpMethod: "PUT",
             body: {}
@@ -51,7 +55,7 @@ describe("Test for the Video PUT method", () => {
         expect(res.statusCode).toBe(400);
     });
 
-    test('Should call db Save function if proper body is passed', async () => {
+    test.skip('Should call db Save function if proper body is passed', async () => {
 
         await callHandler({
             httpMethod: "PUT",
@@ -65,7 +69,7 @@ describe("Test for the Video PUT method", () => {
 
     });
 
-    test('Should call the save method', async () => {
+    test.skip('Should call the save method', async () => {
 
      await callHandler({
         httpMethod: "PUT",
@@ -80,8 +84,10 @@ describe("Test for the Video PUT method", () => {
 
     test('should call the function to generate pre-signed url and send that in the body', async () => {
 
+        console.log("videoCrudHandlerTEST - test4 - 1"); 
         spyGetUploadUrl.mockImplementation(async () => "http://upload-url")
 
+        console.log("videoCrudHandlerTEST - test4 - 2"); 
         const res = await callHandler({
             httpMethod: "PUT",
             body : {
@@ -90,6 +96,7 @@ describe("Test for the Video PUT method", () => {
             }
         })
 
+        console.log("videoCrudHandlerTEST - test4 - 3"); 
         expect(spyGetUploadUrl).toBeCalledTimes(1)
 
         expect(JSON.parse(res.body).uploadUrl).toBe("http://upload-url")

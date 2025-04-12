@@ -14,14 +14,14 @@ export const withBodyValidation = <T extends ZodSchema>({schema, handler} : {
     schema: T,
     handler: (body: z.infer<T>, e: APIGatewayEvent) => Promise<any>
 }) => {
-         console.log("NaveenAwsLog - Inside apits - handler func");
+         console.log("Inside apits - withBodyValidation - 1");
         const apiGatewayProxyHandler: APIGatewayProxyHandler = async (e)=> {
 
             try{
                 const eData = JSON.parse(e.body || "{}");
                 const body = schema.parse(JSON.parse(e.body || "{}"))
                 const res = await handler(body, e)
-
+                console.log("Inside apits - withBodyValidation - 2");
                 return {
                     body: JSON.stringify(res),
                     statusCode : 200

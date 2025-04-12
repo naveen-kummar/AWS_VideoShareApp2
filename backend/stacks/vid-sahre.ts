@@ -56,8 +56,8 @@ export class VidShareAppStack extends cdk.Stack {
         UPLOAD_BUCKET_NAME : uploadBucket.bucketName,
         UPLOAD_BUCKET_REGION : this.region,
     }
-    const putHandler = new lambdaFn.NodejsFunction(this, "PutHandler", {
-      entry: resolve(__dirname, "../../lambdas/putHandler.ts"),
+    const videoCrudHandler = new lambdaFn.NodejsFunction(this, "videoCrudHandler", {
+      entry: resolve(__dirname, "../../lambdas/videoCrudHandler.ts"),
       handler: "handler",
       bundling: {
         nodeModules: [ 'uuid', 'zod', '@smithy/core' ,'@aws-sdk/core'], // Mark as external '@smithy/core' ,
@@ -151,7 +151,7 @@ export class VidShareAppStack extends cdk.Stack {
     //Similar to API Gateway in AWS Console
     mainApi.root
     .addResource("Video")
-    .addMethod("PUT", new apigateway.LambdaIntegration(putHandler));
+    .addMethod("PUT", new apigateway.LambdaIntegration(videoCrudHandler));
 
     //Now let's do explicit deployment of API Gateway
     mainApi.deploymentStage = new apigateway.Stage(
@@ -165,11 +165,11 @@ export class VidShareAppStack extends cdk.Stack {
       }
     );
 
-    //Provide access to putHandler to update dynamodb table and put data in to s3
-    table.grantWriteData(putHandler);
+    //Provide access to videoCrudHandler to update dynamodb table and put data in to s3
+    table.grantWriteData(videoCrudHandler);
     table.grantWriteData(s3EventListener);
     table.grantWriteData(mediaConvertEventHandler);
-    uploadBucket.grantPut(putHandler);
+    uploadBucket.grantPut(videoCrudHandler);
     uploadBucket.grantRead(s3EventListener);
     uploadBucket.grantDelete(mediaConvertEventHandler);
     uploadBucket.grantRead(mediaConvertRole);

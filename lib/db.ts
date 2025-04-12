@@ -30,7 +30,7 @@ export class DB<T extends { id: string }>{
     implementation to MongoDB instead of DynamoDB*/
     async save(doc : T) {
 
-        console.log("NaveenAwsLog - Inside dbts - save func");
+        console.log("Inside dbts - save func");
          return this.client.send(new PutCommand({
             TableName : this.config.tableName,
             Item : doc,

@@ -21,6 +21,7 @@ const s3 = new S3({
 
 export const handler: APIGatewayProxyHandler = (...params) => {
 
+    console.log("Inside APIGatewayProxyHandler 1");
     switch(params[0].httpMethod){
     
     case "PUT":
@@ -33,7 +34,7 @@ export const handler: APIGatewayProxyHandler = (...params) => {
             }),
             async handler({title, userId, description, tags}){
             
-                console.log("NaveenAwsLog - Inside putHandlerts - handler func");
+                console.log("Inside APIGatewayProxyHandler 2");
             
                 const id = v4();
             
@@ -46,6 +47,8 @@ export const handler: APIGatewayProxyHandler = (...params) => {
                     description,
                     tags,
                 });
+
+                console.log("Inside APIGatewayProxyHandler 3");
             
                 return {
                     uploadUrl : await s3.getUploadUrl({
@@ -53,6 +56,8 @@ export const handler: APIGatewayProxyHandler = (...params) => {
                         expiresIn : 60 * 10
                     })
                 }
+
+                console.log("Inside videoCrudHandlerTS-->PUT - 4");
             }
             })(...params);
 
