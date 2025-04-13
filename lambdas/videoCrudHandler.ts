@@ -3,7 +3,7 @@ import {S3} from '../lib/s3'
 import {v4} from 'uuid';
 import {z} from 'zod';
 import { VideoDB} from '../entity/video';
-import { withBodyValidation } from '../lib/handlers/api';
+import { withValidation } from '../lib/handlers/api';
 import {PutHandler as Env} from "../lib/lambdaEnv"
 import { APIGatewayProxyHandler } from "aws-lambda";
 
@@ -25,8 +25,8 @@ export const handler: APIGatewayProxyHandler = (...params) => {
     switch(params[0].httpMethod){
     
     case "PUT":
-        return withBodyValidation({
-            schema :  z.object({
+        return withValidation({
+            bodySchema :  z.object({
                 userId : z.string(),
                 title : z.string(),
                 description : z.string().optional(),

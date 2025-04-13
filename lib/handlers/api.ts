@@ -4,24 +4,42 @@ import {z, ZodError, ZodSchema } from "zod"
 
 
 /*
-withBodyValidation: Below is a function which returns 
+withValidation: Below is a function which returns 
 APIGatewayProxyHandler, Again which is an another function
 
 Input: schema - Zod Schema
        handler - Main Handler which will be trihggerred by AWS Lambda upon the API PUT Call
 */
-export const withBodyValidation = <T extends ZodSchema>({schema, handler} : {
-    schema: T,
-    handler: (body: z.infer<T>, e: APIGatewayEvent) => Promise<any>
+export const withValidation = <TBody extends ZodSchema,
+                                   TQuery extends ZodSchema>({
+    handler, bodySchema, querySchema} : 
+    {
+    bodySchema?: TBody,
+    querySchema?: TQuery,
+    handler: (body: z.infer<TBody>, queries: z.infer<TQuery>, e: APIGatewayEvent) => Promise<any>
 }) => {
-         console.log("Inside apits - withBodyValidation - 1");
+         console.log("Inside apits - withValidation - 1");
         const apiGatewayProxyHandler: APIGatewayProxyHandler = async (e)=> {
 
             try{
-                const eData = JSON.parse(e.body || "{}");
-                const body = schema.parse(JSON.parse(e.body || "{}"))
-                const res = await handler(body, e)
-                console.log("Inside apits - withBodyValidation - 2");
+
+                let body = {}
+                let queries = {}
+                
+                if(bodySchema)
+                {
+                    //Extract "body" contents of AWS event "e"
+                    body = bodySchema.parse(JSON.parse(e.body || "{}"));
+                }
+
+                if(querySchema)
+                {
+                    //Extract "queryStringParameters" contents of AWS event "e"
+                    queries = querySchema.parse(e.queryStringParameters || {});
+                }
+
+                const res = await handler(body, queries, e)
+                console.log("Inside apits - withValidation - 2");
                 return {
                     body: JSON.stringify(res),
                     statusCode : 200
