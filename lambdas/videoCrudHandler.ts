@@ -61,6 +61,17 @@ export const handler: APIGatewayProxyHandler = (...params) => {
             }
             })(...params);
 
+    case "GET":
+        return withValidation({
+            querySchema: z.union([
+                z.object({id: z.string(), userId: z.string().optional()}),
+                z.object({userId: z.string(), id: z.string().optional()}),
+            ]),
+            async handler (_, queries){},
+        })(...params);    
+    
+    default:
+        break;
     }
            
 }
