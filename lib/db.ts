@@ -26,6 +26,12 @@ export class DB<T extends { id: string }>{
     );
     }
 
+    /*Get document based on ID */
+    async get(id: string) {
+        
+    }
+
+
     /*This function signature is made generic so that we can change 
     implementation to MongoDB instead of DynamoDB*/
     async save(doc : T) {

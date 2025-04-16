@@ -18,10 +18,10 @@ const s3 = new S3({
     region : env.UPLOAD_BUCKET_REGION || 'ap-south-1'
 });
 
-
 export const handler: APIGatewayProxyHandler = (...params) => {
 
-    console.log("Inside APIGatewayProxyHandler 1");
+    console.log("Inside APIGatewayProxyHandler Ax");
+    console.log("Inside APIGatewayProxyHandler Aa - " , params[0].httpMethod);
     switch(params[0].httpMethod){
     
     case "PUT":
@@ -62,12 +62,25 @@ export const handler: APIGatewayProxyHandler = (...params) => {
             })(...params);
 
     case "GET":
+        console.log("Inside videoCrudHandlerTS-->GET - 1");
         return withValidation({
             querySchema: z.union([
                 z.object({id: z.string(), userId: z.string().optional()}),
-                z.object({userId: z.string(), id: z.string().optional()}),
-            ]),
-            async handler (_, queries){},
+                z.object({userId: z.string(), id: z.string().optional()}),],
+                {
+                    errorMap: () => ({
+                        message: "query cannot be empty, pass userid or id",
+                    }),
+                }),
+            async handler (_, queries){
+
+                console.log("Inside videoCrudHandlerTS-->GET - 2");
+                if(queries.id)
+                {
+                    console.log("Inside videoCrudHandlerTS-->GET - 3");
+                    return videoDB.get(queries.id)
+                }
+            },
         })(...params);    
     
     default:

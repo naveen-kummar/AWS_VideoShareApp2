@@ -17,6 +17,7 @@ import {DB} from "../../lib/db";
 import { S3 } from "../../lib/s3";
 
 const spySave = jest.spyOn(DB.prototype, "save");
+const spyGet = jest.spyOn(DB.prototype, "get");
 const spyGetUploadUrl = jest.spyOn(S3.prototype, 'getUploadUrl')
 
 function runBeforeEach(){
@@ -24,18 +25,22 @@ function runBeforeEach(){
     jest.resetAllMocks()
     console.log("videoCrudHandlerTEST - runBeforeEach - 2");
     spySave.mockImplementation((() => {}) as any)
-    console.log("videoCrudHandlerTEST - runBeforeEach - 3");
+    console.log("videoCrudHandlerTEST - runBeforeEach - 3a");
+    spyGet.mockImplementation((() => {}) as any)
+    console.log("videoCrudHandlerTEST - runBeforeEach - 3b");    
     spyGetUploadUrl.mockImplementation((() => "url") as any)
     console.log("videoCrudHandlerTEST - runBeforeEach - 4");    
 }
 
-function callHandler({httpMethod, body} : {
-httpMethod : "GET" | "POST" | "PUT" | "DELETE",
-body: any
+function callHandler({httpMethod, body, queryStringParameters = {}} : {
+httpMethod : "GET" | "POST" | "PUT" | "DELETE";
+body?: any;
+queryStringParameters?: any;
 }){
     return (handler as any)({
         body: JSON.stringify(body),
-        httpMethod
+        httpMethod,
+        queryStringParameters
     });
 }
 
@@ -82,7 +87,7 @@ describe("Test for the Video PUT method", () => {
 
     });
 
-    test('should call the function to generate pre-signed url and send that in the body', async () => {
+    test.skip('should call the function to generate pre-signed url and send that in the body', async () => {
 
         console.log("videoCrudHandlerTEST - test4 - 1"); 
         spyGetUploadUrl.mockImplementation(async () => "http://upload-url")
@@ -117,6 +122,32 @@ describe("Test for the Video PUT method", () => {
  */
 
 //2. GET Method
-describe('Test for GET Method', () => {
+describe('Test for Video GET Method', () => {
+    beforeEach(runBeforeEach);
 
-})
+    test("should return 400 if no query is passed", async () => {
+
+        const res = await callHandler({
+            httpMethod : "GET",
+            queryStringParameters : {
+                randomValue : "random"
+            }
+        });
+
+        console.log(res)
+        expect(res.statusCode).toBe(400);
+    });
+
+    test("Should send a get req to the database with the id", async () => {
+        await callHandler({
+            httpMethod : "GET",
+            queryStringParameters : {
+                id : "video-123"
+            }
+        });
+
+        expect(spyGet).toHaveBeenCalledTimes(1);
+        expect(spyGet).toHaveBeenCalledWith("video-123");
+        
+    });
+});

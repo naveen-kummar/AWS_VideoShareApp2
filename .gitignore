@@ -421,3 +421,6 @@ my-cdk-app1/
 
 # skip pnpm-lock.yaml
 pnpm-lock.yaml
+
+# skip temp build files
+.vscode_ForDebugging/
