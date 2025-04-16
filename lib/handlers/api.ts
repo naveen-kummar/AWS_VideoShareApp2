@@ -1,4 +1,5 @@
 import { APIGatewayEvent, APIGatewayProxyHandler } from "aws-lambda"
+import { KnownError } from "lib/error";
 import {z, ZodError, ZodSchema } from "zod"
 
 
@@ -60,6 +61,13 @@ export const withValidation = <TBody extends ZodSchema,
                 }
 
                 // known error
+                if(error instanceof KnownError)
+                {
+                    return {
+                        body: error.message,
+                        statusCode: error.code,
+                    };
+                }
 
                 // unknown error
                 console.log(error);

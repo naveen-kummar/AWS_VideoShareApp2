@@ -1,5 +1,5 @@
 import { DynamoDBClient } from "@aws-sdk/client-dynamodb";
-import { PutCommand, DynamoDBDocumentClient, UpdateCommand } from "@aws-sdk/lib-dynamodb";
+import { PutCommand, DynamoDBDocumentClient, UpdateCommand, GetCommand } from "@aws-sdk/lib-dynamodb";
 import { Key } from "aws-cdk-lib/aws-kms";
 
 
@@ -28,8 +28,15 @@ export class DB<T extends { id: string }>{
 
     /*Get document based on ID */
     async get(id: string) {
-        
-    }
+        const res = await this.client.send(
+            new GetCommand({
+                TableName: this.config.tableName,
+                Key: {id,},
+            })
+        );
+
+        return res.Item as T;
+    };
 
 
     /*This function signature is made generic so that we can change 

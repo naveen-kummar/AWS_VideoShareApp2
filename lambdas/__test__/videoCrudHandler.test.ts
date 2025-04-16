@@ -150,4 +150,38 @@ describe('Test for Video GET Method', () => {
         expect(spyGet).toHaveBeenCalledWith("video-123");
         
     });
+
+    test("Should return video doc with that id", async () => {
+
+        spyGet.mockResolvedValue({
+            title: "video-title"
+        })
+
+        const res = await callHandler({
+            httpMethod : "GET",
+            queryStringParameters : {
+                id : "video-123",
+            },
+        });
+
+        expect(JSON.parse(res.body).title).toBe("video-title");
+        
+    });
+
+    test("Should return 404 error if video is not found", async () => {
+
+        spyGet.mockResolvedValue(undefined)
+
+        const res = await callHandler({
+            httpMethod : "GET",
+            queryStringParameters : {
+                id : "video-123",
+            },
+        });
+
+        console.log(res)
+
+        expect(res.statusCode).toBe(404);
+        
+    });
 });

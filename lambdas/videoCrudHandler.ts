@@ -1,4 +1,5 @@
 //import {APIGatewayProxyHandler} from 'aws-lambda';
+import { KnownError } from '../lib/error';
 import {S3} from '../lib/s3'
 import {v4} from 'uuid';
 import {z} from 'zod';
@@ -6,6 +7,7 @@ import { VideoDB} from '../entity/video';
 import { withValidation } from '../lib/handlers/api';
 import {PutHandler as Env} from "../lib/lambdaEnv"
 import { APIGatewayProxyHandler } from "aws-lambda";
+
 
 const env = process.env as Env
 
@@ -78,7 +80,9 @@ export const handler: APIGatewayProxyHandler = (...params) => {
                 if(queries.id)
                 {
                     console.log("Inside videoCrudHandlerTS-->GET - 3");
-                    return videoDB.get(queries.id)
+                    const res = await videoDB.get(queries.id);
+                    if(!res) throw new KnownError(404, "Video not Found");
+                    return res;
                 }
             },
         })(...params);    
