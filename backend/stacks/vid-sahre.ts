@@ -44,7 +44,10 @@ export class VidShareAppStack extends cdk.Stack {
 
     // Stream Bucket (S3)
     const streamBucket = new s3.Bucket(this, "streamBucket", {
-      removalPolicy: cdk.RemovalPolicy.DESTROY //Need to explicity mention that this s3 bucket need to be destroyed during "CDK Destroy"
+      removalPolicy: cdk.RemovalPolicy.DESTROY ,//Need to explicity mention that this s3 bucket need to be destroyed during "CDK Destroy"
+      blockPublicAccess: s3.BlockPublicAccess.BLOCK_ACLS, // disable only ACL blocking
+      // OR completely allow public access:
+      //blockPublicAccess: s3.BlockPublicAccess.NONE, // <--- add this line
     });
 
     streamBucket.grantPublicAccess()
