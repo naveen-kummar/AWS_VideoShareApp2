@@ -95,7 +95,7 @@ export class VidShareAppStack extends cdk.Stack {
       VIDEO_TABLE_REGION : this.region,
       UPLOAD_BUCKET_NAME : uploadBucket.bucketName,
       UPLOAD_BUCKET_REGION : this.region,
-      MEDIA_INFO_CLI_PATH : "./mediainfo",
+      MEDIA_INFO_CLI_PATH : "./mediaInfo",
       MEDIA_CONVERT_ENDPOINT : "https://xnbzilj6c.mediaconvert.ap-south-1.amazonaws.com",   
       MEDIA_CONVERT_OUTPUT_BUCKET : streamBucket.bucketName,
       MEDIA_CONVERT_REGION : this.region,         
@@ -107,10 +107,12 @@ export class VidShareAppStack extends cdk.Stack {
       timeout: cdk.Duration.seconds(15),
       bundling: {
         commandHooks: {
-            //We need to copy mediainfo utillity after bundling done
+            //We need to copy mediaInfo utillity after bundling done
             afterBundling(inputDir, outputDir) {
               return [
-                `cp '${inputDir}/mediainfo/mediainfo' '${outputDir}'`,
+                `echo "Listing input dir..."`,
+                `ls -la '${inputDir}/mediaInfo'`,                
+                `cp '${inputDir}/mediaInfo/mediainfo' '${outputDir}'`,
               ];
             },
 
