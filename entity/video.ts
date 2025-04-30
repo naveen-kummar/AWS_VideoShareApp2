@@ -39,4 +39,17 @@ export class VideoDB extends DB<DocSchemaType> {
             ...files,
         };
     }
+
+    getByUserId(userId: string) {
+        return this.queryGSI({
+            IndexName: "byUserId",
+            KeyConditionExpression: "#userId = :userId",
+            ExpressionAttributeNames: {
+                "#userId": "userId",
+            },
+            ExpressionAttributeValues: {
+                ":userId": userId,
+            },
+        });
+    }
 };

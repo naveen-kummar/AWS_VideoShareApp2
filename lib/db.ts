@@ -1,5 +1,5 @@
 import { DynamoDBClient } from "@aws-sdk/client-dynamodb";
-import { PutCommand, DynamoDBDocumentClient, UpdateCommand, GetCommand } from "@aws-sdk/lib-dynamodb";
+import { QueryCommand, PutCommand, UpdateCommand, GetCommand, DynamoDBDocumentClient } from "@aws-sdk/lib-dynamodb";
 import { Key } from "aws-cdk-lib/aws-kms";
 
 
@@ -37,6 +37,31 @@ export class DB<T extends { id: string }>{
 
         return res.Item as T;
     };
+
+    async queryGSI({
+        IndexName,
+        KeyConditionExpression,
+        ExpressionAttributeNames,
+        ExpressionAttributeValues,
+    } : {
+        IndexName: string;
+        KeyConditionExpression: string;
+        ExpressionAttributeNames: Record<string, string>;
+        ExpressionAttributeValues: Record<string, string>;
+    }) : Promise<T[]> { 
+        const res = await this.client.send(
+            new QueryCommand({
+                TableName: this.config.tableName,
+                IndexName,
+                KeyConditionExpression,
+                ExpressionAttributeNames,
+                ExpressionAttributeValues,
+            })
+        );
+        return res.Items as T[];
+    }
+    
+
 
 
     /*This function signature is made generic so that we can change 
