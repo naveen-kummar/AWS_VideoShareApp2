@@ -84,6 +84,11 @@ export const handler: APIGatewayProxyHandler = (...params) => {
                     if(!res) throw new KnownError(404, "Video not Found");
                     return res;
                 }
+
+                if(queries.userId)
+                {
+                    return videoDB.getByUserId(queries.userId); 
+                }
             },
         })(...params);    
     

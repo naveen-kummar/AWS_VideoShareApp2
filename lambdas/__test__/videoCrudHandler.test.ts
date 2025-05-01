@@ -18,6 +18,7 @@ import { S3 } from "../../lib/s3";
 
 const spySave = jest.spyOn(DB.prototype, "save");
 const spyGet = jest.spyOn(DB.prototype, "get");
+const spyQuery = jest.spyOn(DB.prototype, "queryGSI");
 const spyGetUploadUrl = jest.spyOn(S3.prototype, 'getUploadUrl')
 
 function runBeforeEach(){
@@ -29,7 +30,8 @@ function runBeforeEach(){
     spyGet.mockImplementation((() => {}) as any)
     console.log("videoCrudHandlerTEST - runBeforeEach - 3b");    
     spyGetUploadUrl.mockImplementation((() => "url") as any)
-    console.log("videoCrudHandlerTEST - runBeforeEach - 4");    
+    console.log("videoCrudHandlerTEST - runBeforeEach - 4");  
+    spyQuery.mockImplementation((() => {}) as any)  
 }
 
 function callHandler({httpMethod, body, queryStringParameters = {}} : {
@@ -184,4 +186,21 @@ describe('Test for Video GET Method', () => {
         expect(res.statusCode).toBe(404);
         
     });
+
+    test("Should get the videos array by userId", async () => {
+
+        const res = await callHandler({
+            httpMethod : "GET",
+            queryStringParameters : {
+                userId : "user-123",
+            },
+        });
+
+        console.log(res)
+
+        expect(spyGet).not.toHaveBeenCalled();
+        expect(JSON.stringify(spyQuery.mock.calls)).toContain("user-123")
+        expect(spyQuery).toHaveBeenCalledTimes(1);
+        
+    });    
 });

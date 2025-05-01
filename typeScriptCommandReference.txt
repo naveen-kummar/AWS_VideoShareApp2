@@ -67,5 +67,7 @@ pnpm build
 pnpm tsc --build 
 pnpm tsc --build --force   
 
+pnpm test:watch videoCrudHandler.test
+
 ///////////////////////////////////////////////////////////
 > Just build individual files (and ignore error related @smithy) and run directlty on ts file.
