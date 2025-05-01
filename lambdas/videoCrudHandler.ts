@@ -5,7 +5,7 @@ import {v4} from 'uuid';
 import {z} from 'zod';
 import { VideoDB} from '../entity/video';
 import { withValidation } from '../lib/handlers/api';
-import {PutHandler as Env} from "../lib/lambdaEnv"
+import {videoCrudHandler as Env} from "../lib/lambdaEnv"
 import { APIGatewayProxyHandler } from "aws-lambda";
 
 

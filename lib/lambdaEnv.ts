@@ -1,4 +1,4 @@
-export type PutHandler = {
+export type videoCrudHandler = {
     VIDEO_TABLE_NAME: string;
     VIDEO_TABLE_REGION: string;
     UPLOAD_BUCKET_NAME: string;

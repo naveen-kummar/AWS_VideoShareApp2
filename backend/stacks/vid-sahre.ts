@@ -53,7 +53,7 @@ export class VidShareAppStack extends cdk.Stack {
     streamBucket.grantPublicAccess()
 
     //4.  Put Handler
-    const putHandlerEnv : LambdaEnvType.PutHandler = {
+    const videoCrudHandlerEnv : LambdaEnvType.videoCrudHandler = {
         VIDEO_TABLE_NAME : table.tableName,
         VIDEO_TABLE_REGION : this.region,
         UPLOAD_BUCKET_NAME : uploadBucket.bucketName,
@@ -66,7 +66,7 @@ export class VidShareAppStack extends cdk.Stack {
         nodeModules: [ 'uuid', 'zod', '@smithy/core' ,'@aws-sdk/core'], // Mark as external '@smithy/core' ,
         externalModules: ['@aws-sdk/nested-clients/sts', '@aws-sdk/nested-clients/sso-oidc'],
       }, 
-      environment: putHandlerEnv,
+      environment: videoCrudHandlerEnv,
     });
 
     //4b. Create MediaConvert Role to read from upload bucket and write to stream bucket
