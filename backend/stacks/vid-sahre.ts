@@ -155,8 +155,8 @@ export class VidShareAppStack extends cdk.Stack {
     });
     //Similar to API Gateway in AWS Console
     mainApi.root
-    .addResource("Video")
-    .addMethod("PUT", new apigateway.LambdaIntegration(videoCrudHandler));
+    .addResource("video")
+    .addMethod("ANY", new apigateway.LambdaIntegration(videoCrudHandler));
 
     //Now let's do explicit deployment of API Gateway
     mainApi.deploymentStage = new apigateway.Stage(
@@ -171,7 +171,7 @@ export class VidShareAppStack extends cdk.Stack {
     );
 
     //Provide access to videoCrudHandler to update dynamodb table and put data in to s3
-    table.grantWriteData(videoCrudHandler);
+    table.grantReadWriteData(videoCrudHandler);
     table.grantWriteData(s3EventListener);
     table.grantWriteData(mediaConvertEventHandler);
     uploadBucket.grantPut(videoCrudHandler);
