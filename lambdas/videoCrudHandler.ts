@@ -22,7 +22,7 @@ const s3 = new S3({
 
 export const handler: APIGatewayProxyHandler = (...params) => {
 
-    console.log("Inside APIGatewayProxyHandler Ax");
+    console.log("Inside APIGatewayProxyHandler Ay");
     console.log("Inside APIGatewayProxyHandler Aa - " , params[0].httpMethod);
     switch(params[0].httpMethod){
     
@@ -82,11 +82,17 @@ export const handler: APIGatewayProxyHandler = (...params) => {
                     console.log("Inside videoCrudHandlerTS-->GET - 3");
                     const res = await videoDB.get(queries.id);
                     if(!res) throw new KnownError(404, "Video not Found");
+                    console.log(res);
                     return res;
                 }
 
                 if(queries.userId)
                 {
+                    console.log("Inside videoCrudHandlerTS-->GET - 4");
+                    const result = await videoDB.scan({ userId: 'user-2' });
+
+                    console.log(result); // This will contain the result of the scan
+
                     return videoDB.getByUserId(queries.userId); 
                 }
             },

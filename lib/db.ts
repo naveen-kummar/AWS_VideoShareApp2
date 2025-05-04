@@ -1,5 +1,5 @@
 import { DynamoDBClient } from "@aws-sdk/client-dynamodb";
-import { QueryCommand, PutCommand, UpdateCommand, GetCommand, DynamoDBDocumentClient } from "@aws-sdk/lib-dynamodb";
+import { QueryCommand, PutCommand, UpdateCommand, GetCommand, DynamoDBDocumentClient, ScanCommand , ScanCommandOutput} from "@aws-sdk/lib-dynamodb";
 import { Key } from "aws-cdk-lib/aws-kms";
 
 
@@ -73,6 +73,32 @@ export class DB<T extends { id: string }>{
             TableName : this.config.tableName,
             Item : doc,
          }))
+    }
+
+  // Correcting the scan method to match the right shape
+    async scan(queryParams: { userId: string }) {
+        console.log("Scanning for userId:", queryParams.userId);
+
+        const params = {
+            TableName: this.config.tableName,  // Use the class config here
+            FilterExpression: "#userId = :userId",
+            ExpressionAttributeNames: {
+                "#userId": "userId",
+            },
+            ExpressionAttributeValues: {
+                ":userId": queryParams.userId,
+            },
+        };
+
+        const command = new ScanCommand(params); // Using ScanCommand
+        try {
+            const data: ScanCommandOutput = await this.client.send(command);
+            console.log("Scan result:", data.Items);  // Log the scanned items
+            return data.Items;  // Return the items directly
+        } catch (error) {
+            console.error("Error scanning table:", error);
+            throw new Error("Error scanning DynamoDB table");
+        }
     }
 
     /*This function signature is made generic so that we can change 

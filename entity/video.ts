@@ -41,6 +41,21 @@ export class VideoDB extends DB<DocSchemaType> {
     }
 
     getByUserId(userId: string) {
+        console.log(`Querying for userId: ${userId}`);
+
+        console.log("Query Parameters:", {
+            IndexName: "byUserId",
+            KeyConditionExpression: "#userId = :userId",
+            ExpressionAttributeNames: {
+                "#userId": "userId",
+            },
+            ExpressionAttributeValues: {
+                ":userId": userId,
+            },
+        });
+
+
+
         return this.queryGSI({
             IndexName: "byUserId",
             KeyConditionExpression: "#userId = :userId",
@@ -50,6 +65,12 @@ export class VideoDB extends DB<DocSchemaType> {
             ExpressionAttributeValues: {
                 ":userId": userId,
             },
+        }).then(response => {
+            console.log("Query response:", response);
+            return response;
+        }).catch(error => {
+            console.error("Error querying GSI:", error);
+            throw error;
         });
     }
 };

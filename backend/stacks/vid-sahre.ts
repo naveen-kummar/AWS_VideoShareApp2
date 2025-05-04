@@ -34,7 +34,7 @@ export class VidShareAppStack extends cdk.Stack {
     table.addGlobalSecondaryIndex({
       indexName: "byUserId",
       partitionKey: { name: 'userId', type: dynamodb.AttributeType.STRING },
-      sortKey: { name: 'uploadedTime', type: dynamodb.AttributeType.NUMBER },
+      sortKey: { name: 'uploadTime', type: dynamodb.AttributeType.NUMBER },
     });
 
     // Upload Video Bucket (S3)
