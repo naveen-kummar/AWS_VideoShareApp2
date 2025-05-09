@@ -71,3 +71,32 @@ pnpm test:watch videoCrudHandler.test
 
 ///////////////////////////////////////////////////////////
 > Just build individual files (and ignore error related @smithy) and run directlty on ts file.
+
+
+/////////////////////OpenSearch - Mapping///////////////////////////
+PUT video
+{
+  "mappings" : {
+    "properties": {
+      "userId" : { "type" : "keyword"},
+      "title" : { "type" : "text"},
+      "description" : {"type" : "text"},
+      "tags" : {"type" : "text"}
+    }
+  }
+}
+
+-------------------As curl------------------------------
+curl -XPUT "http://localhost:9200/video" -H 'Content-Type: application/json' -d'
+{
+  "mappings" : {
+    "properties": {
+      "userId" : { "type" : "keyword"},
+      "title" : { "type" : "text"},
+      "description" : {"type" : "text"},
+      "tags" : {"type" : "text"}
+    }
+  }
+}'
+
+///////////////////////////////////////////////////////////////

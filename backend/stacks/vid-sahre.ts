@@ -10,6 +10,7 @@ import {resolve} from 'path'
 import * as LambdaEnvType from "../../lib/lambdaEnv"
 import * as event from 'aws-cdk-lib/aws-events'
 import * as eventTarget from 'aws-cdk-lib/aws-events-targets'
+import opensearch, { EngineVersion } from 'aws-cdk-lib/aws-opensearchservice'
 
 
 
@@ -170,6 +171,16 @@ export class VidShareAppStack extends cdk.Stack {
       }
     );
 
+    //OpenSearch Domain
+    const domain = new opensearch.Domain(this, "Domain", {
+      version: EngineVersion.OPENSEARCH_2_3,
+      capacity: {
+        dataNodes : 1,
+        dataNodeInstanceType : "t3.small.search",
+      },
+      removalPolicy: cdk.RemovalPolicy.DESTROY, //Need to explicity mention that this s3 bucket need to be destroyed during "CDK Destroy"
+    })
+      
     //Provide access to videoCrudHandler to update dynamodb table and put data in to s3
     table.grantReadWriteData(videoCrudHandler);
     table.grantWriteData(s3EventListener);
