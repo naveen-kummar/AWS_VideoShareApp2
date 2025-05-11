@@ -191,6 +191,15 @@ export class VidShareAppStack extends cdk.Stack {
     uploadBucket.grantRead(mediaConvertRole);
     streamBucket.grantWrite(mediaConvertRole);  
 
+    domain.addAccessPolicies(
+      new iam.PolicyStatement({
+        actions: ["*"],
+        resources: ["*"],
+        effect: iam.Effect.ALLOW,
+        principals: [new iam.ArnPrincipal("arn:aws:iam::086505785551:user/opean-search-admin")],
+      })
+    );
+
     /*Now we need enhance the Role Policy of s3Evenlisterer lambda to 
     transfer the ARN of our mediaConvertRole to the MediaConvertClient during the
     video convert operation*/
